@@ -40,16 +40,17 @@ project roadmap: `architecture/roadmap.html`). Checked items are already real:
 - [ ] `evidence/baseline-runs/baseline-test-report.md` — table exists, rows filled Days 4–9
 - [ ] `evidence/cycles/` — cycle logs added as each Run→Score→Learn→Change→Re-score iteration
       completes (Days 8–11 minimum, more if time allows)
-- [x] `evidence/dashboard.html` — live from Day 10 onward, regenerated on each scheduled refresh
+- [ ] `evidence/dashboard.html` — will go live from Day 10 onward, regenerated on each scheduled refresh
 - [ ] `evidence/screenshots/` — workflow canvas, pipeline in action, Langfuse traces — Day 14
-- [x] `eval-service/` — built and running from Day 9
+- [ ] `eval-service/` — to be built and running from Day 9
 - [ ] `n8n/prd-genie-pipeline.json` — exported once the full pipeline is stable, Day 9 onward,
       re-exported on Day 14 as the final submitted version
 
 ## Running it
 
-See `eval-service/README.md` for the eval service, and `docs/03-runbook-handover.md` for how to run
-the pipeline itself once `n8n/prd-genie-pipeline.json` exists.
+See `eval-service/README.md` (not yet created — lands with the eval service build, Day 9) for the
+eval service, and `docs/03-runbook-handover.md` for how to run the pipeline itself once
+`n8n/prd-genie-pipeline.json` exists.
 
 ## Submission pack
 
@@ -75,7 +76,8 @@ Full day-by-day mapping of when each piece lands: `architecture/roadmap.html`.
 ## Mandatory housekeeping
 
 - `.gitignore` excludes `eval-service/eval_results.db`, `.env`, and anything matching `*secret*` or
-  `*_key*` — **verify no API key or the eval-service shared secret is committed** before making this
-  repo public. `eval-service/main.py`'s `API_KEY` placeholder must be changed and kept out of git,
-  not just renamed in place.
+  `*_key*` (with `*.example` files explicitly exempted from those patterns, so `.env.example` stays
+  committed) — **verify no API key or the eval-service shared secret is committed** before making
+  this repo public. `eval-service/main.py`'s `API_KEY` placeholder must be changed and kept out of
+  git, not just renamed in place.
 - This capstone lives in its own repository, separate from weekly course assignments.

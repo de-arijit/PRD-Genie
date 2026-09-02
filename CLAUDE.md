@@ -58,16 +58,25 @@ points at it.
 
 ## State (update this section every task)
 
-- **Current phase**: Discovery (Day 1–2 equivalent)
-- **Last completed step**: Task 1 — repository scaffolding, initial commit, GitHub repo created
-  and pushed (`de-arijit/PRD-Genie`, commit `25d9cee`, branch `main`).
-- **Next step**: Task 2 — populate `README.md`, this `CLAUDE.md` (already done),
-  `architecture/ground-rules.md`, `architecture/cycle-template.md`, `architecture/roadmap.html`,
-  and the five `docs/`/`evidence/` artifact files with their real content (currently only
-  `.gitkeep` placeholders exist in most folders).
+- **Current phase**: Discovery complete → entering Setup (Day 3 equivalent)
+- **Last completed step**: Task 2 — populated `README.md`, `CLAUDE.md`, `architecture/ground-rules.md`,
+  `architecture/cycle-template.md`, `architecture/roadmap.html`, and the five `docs/`/`evidence/`
+  TPM artifacts with real content. Replaced `.gitignore` with the general `*.example` exemption
+  (not just the one-off `.env.example` patch). Corrected two premature `[x]` checkboxes in
+  `README.md`'s status checklist (`evidence/dashboard.html`, `eval-service/` — both were falsely
+  marked done; fixed to `[ ]` to match actual repo state and stop contradicting this file's own
+  State section) and added "not yet created" caveats to two forward references to
+  `eval-service/README.md` (in `README.md` and `docs/03-runbook-handover.md`). Commit `3e119c5`,
+  pushed to `origin/main`. Follow-up corrections made directly in chat (not yet committed as of
+  this CLAUDE.md edit — land them in Task 3's first commit).
+- **Next step**: Task 3 — Setup phase (Day 3 equivalent): environment readiness verification
+  (Ollama models actually pulled and responding, OpenAI key working, n8n installed/reachable,
+  sample data files present) and a thin-slice proof (one agent, one test input, end to end) before
+  building all 4 agents. This is the first task that touches real credentials and external
+  services rather than just files — expect it to be more manual-step-heavy than Tasks 1–2.
 - **Known deviations from spec, intentionally kept**:
   - `.gitignore` includes `!*.example` / `!.env.example` exemptions not in the original literal
     spec text, added because `.env.*` would otherwise silently exclude `.env.example` from every
-    commit. Keep this exemption for any future `*.example` files too.
+    commit. This exemption covers any future `*.example` files too.
 - **Not yet started**: agent prompts (`architecture/agent-prompts/`), n8n workflow, eval service
   code, baseline test runs, dashboard, cycle logs, screenshots, demo video.

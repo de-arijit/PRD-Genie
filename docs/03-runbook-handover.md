@@ -22,7 +22,8 @@ and understand its state without re-deriving it from the prompt files.*
 3. Score each against `ground-rules.md`.
 4. Fill Run/Score/Learn/Change/Re-score in the copied template as you go.
 5. If the eval service is running: POST each result to `/results`, and the cycle summary to `/cycles`
-   (see `eval-service/README.md` for the exact payloads).
+   (see `eval-service/README.md` for the exact payloads — not yet created; lands with the eval
+   service build, Day 9).
 6. On next scheduled refresh (or manual trigger), `dashboard.html` regenerates with the new numbers.
 
 ## Known limitations (state this plainly — a real handover doesn't hide these)
