@@ -1,0 +1,26 @@
+# secrets
+.env
+.env.*
+!.env.example
+*secret*
+*_key*
+*api_key*
+config.local.*
+
+# eval service
+eval-service/eval_results.db
+*.db
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# n8n local runtime (NOT the exported workflow JSON -- that IS committed)
+n8n/.n8n/
