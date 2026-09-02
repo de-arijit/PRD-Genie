@@ -1,0 +1,52 @@
+Stakeholder Notes - Raw Interview Excerpts
+=============================================
+These are unstructured notes from stakeholder interviews.
+They are intentionally incomplete and messy.
+
+
+--- Interview with Engineering Lead (Raj) ---
+Date: March 12
+
+"The biggest issue right now is our API. It's slow. We need to optimize the query layer before adding any new features. If you're building a dashboard, make sure it doesn't hammer the database with expensive queries."
+
+"We're moving to microservices architecture. The analytics service should be its own service, not bolted onto the monolith."
+
+"For the data model, we should use the existing events table. It has everything we need. But it needs an index on the timestamp column — right now full table scans take 8+ seconds."
+
+"I'd say we need at least 2 sprints for the backend work. Maybe 3 if we include the API redesign."
+
+
+--- Interview with Design Lead (Lisa) ---
+Date: March 13
+
+"Users don't want another dashboard. They want answers. Every tool we've evaluated has too many charts and not enough insights."
+
+"I'd like to explore a single-page app approach. But I know engineering prefers server-rendered pages for SEO. We'll need to discuss."
+
+"Mobile is important but I don't want to compromise the desktop experience. Maybe we do desktop first and mobile as a fast follow."
+
+"Can we add dark mode? Users have asked for it. Not critical but would be nice."
+
+
+--- Interview with VP Sales (Tom) ---
+Date: March 14
+
+"I need this for the next board meeting. Can we get something out by end of March? Even if it's basic?"
+
+"Our top 3 enterprise accounts have specifically asked for this. If we don't ship by Q3, we risk losing at least one of them."
+
+"I don't care about the tech details. Just make it look professional and give me a number I can show the board."
+
+"Also, can it predict churn? That would be a game-changer for my team."
+
+[Note: Tom did not specify what data the churn prediction should use or what accuracy is acceptable]
+
+
+--- Interview with Customer Success (Nina) ---
+Date: March 15
+
+"Customers want to see their own data, filtered by their account. Multi-tenant support is critical."
+
+"Some customers have asked for white-labeling — putting their own logo on reports. Not sure if that's in scope."
+
+"The biggest complaint I hear is 'I can't find what I need.' So search and filtering are more important than adding new metrics."

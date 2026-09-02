@@ -1,0 +1,35 @@
+Product Brief: Advanced Analytics Dashboard
+=============================================
+Author: Priya Sharma, Product Manager
+Date: March 2026
+Status: Draft
+
+OVERVIEW
+We are building an analytics dashboard that gives business users visibility into key metrics without needing to write SQL queries or ask the data team. This is the #1 requested feature from our Enterprise customers.
+
+TARGET USERS
+- Business analysts who currently export data to Excel
+- Team leads who need weekly performance summaries
+- Executives who want a high-level overview without digging into details
+
+KEY REQUIREMENTS
+1. Dashboard should display 5 core metrics: revenue, active users, churn rate, NPS score, and support ticket volume
+2. Users should be able to filter by date range (last 7 days, 30 days, 90 days, custom)
+3. Data should refresh every 15 minutes (not real-time, to manage cost)
+4. Must support role-based access: executives see all data, team leads see their team only
+5. Export to PDF for monthly board reports
+
+CONSTRAINTS
+- Must integrate with our existing PostgreSQL data warehouse
+- Cannot use any third-party analytics tools (licensing cost concern)
+- Must be accessible on mobile (responsive design)
+- Target launch: Q3 2026
+
+OPEN QUESTIONS
+- Should we support custom dashboard layouts or ship a fixed layout first?
+- Do we need alerting (e.g., notify when churn exceeds 5%)?
+- What is the acceptable page load time? (Suggestion: under 3 seconds)
+
+COMPETITORS
+- Competitor X has a similar dashboard but charges $50/user/month extra
+- Competitor Y has basic dashboards included in their Enterprise plan

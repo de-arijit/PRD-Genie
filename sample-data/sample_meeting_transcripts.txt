@@ -1,0 +1,95 @@
+PRD Genie - Sample Meeting Transcripts
+========================================
+Use these as input data for your PRD Genie pipeline.
+They vary in quality from detailed to vague to contradictory.
+
+
+=== TRANSCRIPT 1: Reporting Feature (Detailed) ===
+Meeting: Product Planning - Reporting Dashboard
+Date: March 15, 2026
+Attendees: Sarah (PM), Raj (Engineering Lead), Lisa (Design)
+
+Sarah: Okay let's talk about the reporting feature. Users have been asking for this for months. The key requirement is that users should be able to filter reports by date range, category, and status.
+
+Raj: Makes sense. What about performance? If they're pulling large datasets we need to think about load times.
+
+Sarah: Good point. Results must load in under 2 seconds. That's a hard requirement from the enterprise customers.
+
+Lisa: Are we doing this as a new page or adding it to the existing dashboard?
+
+Sarah: New dedicated page. But it should match our existing design system.
+
+Raj: Who owns this? And what's the timeline?
+
+Sarah: I'm the PM owner. Deadline is end of Q3. Raj, your team would handle the backend. Lisa, we'd need designs by end of April.
+
+Raj: We'll need to decide on the data source. Are we querying live or using a pre-computed data warehouse?
+
+Sarah: TBD on that. Let's decide after we see Lisa's designs and understand the query patterns.
+
+
+=== TRANSCRIPT 2: AI Feature (Vague) ===
+Meeting: Quick Sync - AI Ideas
+Date: March 18, 2026
+Attendees: Tom (VP Product), Ananya (PM)
+
+Tom: So I've been thinking, we really need to do something with AI. Competitors are all doing it. We need better reporting. Something like what Competitor X has. Their stuff looks really smart.
+
+Ananya: What specifically about their reporting do you like?
+
+Tom: I don't know, just the whole thing. It feels intelligent. Can we just add AI to our reports? Make them smarter.
+
+Ananya: We'd need to scope this more. What data would the AI analyze? What outputs are we expecting?
+
+Tom: Just figure it out. Everyone has AI now. We need AI too. Let's discuss again next week.
+
+
+=== TRANSCRIPT 3: Dashboard (Contradictory Requirements) ===
+Meeting: Sprint Planning - Dashboard Updates
+Date: March 20, 2026
+Attendees: Mike (Engineering), Priya (PM), Kevin (DevOps)
+
+Priya: We need the dashboard to auto-refresh every 5 seconds so users always see the latest data.
+
+Mike: That's going to be a lot of API calls. Each refresh hits our backend.
+
+Kevin: Yeah, from a DevOps perspective, that's concerning. Performance is critical. We need to minimize API calls. Our infrastructure can't handle that load.
+
+Priya: But users complain that data is stale. They want real-time.
+
+Mike: We could do WebSockets instead of polling. But that's a bigger project.
+
+Priya: Let's just do the 5-second refresh for now.
+
+Kevin: I strongly disagree. We'll have outages.
+
+Priya: Okay we'll discuss this offline. Moving on.
+
+
+=== TRANSCRIPT 4: Export Feature (Detailed with Acceptance Criteria) ===
+Meeting: Feature Review - Data Export
+Date: March 22, 2026
+Attendees: Ananya (PM), Dev Team
+
+Ananya: Users need to export reports as PDF and CSV. For the PDF export, it must include the company logo at the top of every page. For CSV, it must preserve formulas - so if a cell has a SUM formula, the CSV should export the formula, not just the value.
+
+Dev: That's tricky for CSV. Most CSV implementations only export values.
+
+Ananya: I know, but that's the requirement from the finance team. They import into Excel and need the formulas intact.
+
+Dev: Okay, we can do XLSX instead of plain CSV for the formula support.
+
+Ananya: That works. But the user-facing label should still say "Export to CSV" since that's what they're used to.
+
+
+=== TRANSCRIPT 5: General Discussion (Incomplete Notes) ===
+Meeting: Standup Notes
+Date: March 25, 2026
+Attendees: Various
+
+- Discussed dashboard... something about real-time updates
+- John mentioned something about real-time... need to check
+- Budget for the project is TBD
+- Someone said we need to talk to the analytics team
+- Action item: follow up with design (who?)
+- Next meeting: sometime next week

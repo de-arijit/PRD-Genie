@@ -1,0 +1,28 @@
+PRD Genie - Baseline Test Dataset for Core Capabilities
+=============================================================
+Run each input through your PRD Genie pipeline.
+Check the output against the "Expected Output Must Contain" in the problem statement.
+
+T1: The user should be able to filter reports by date range, category, and status. Results must load in under 2 seconds. PM: Sarah. Deadline: Q3.
+
+T2: We need better reporting. Something like what Competitor X has.
+
+T3: The dashboard should auto-refresh every 5 seconds. [Later in same meeting] Performance is critical, minimize API calls.
+
+T4: Users need to export reports as PDF and CSV. PDF must include company logo. CSV must preserve formulas.
+
+T5: Discussed dashboard... John mentioned something about real-time... budget TBD...
+
+T6: Engineering wants microservices. Design wants single-page app. PM wants it shipped by March.
+
+T7: API must support 10,000 concurrent users. Response time < 200ms at p95. Must integrate with Salesforce REST API v52.
+
+T8: Admins need bulk user management. End users need a simplified view. Auditors need read-only access with full history.
+
+T9: Meeting happened. Notes: none.
+
+T10: SSO login requires the new auth service which is being built by Team Alpha. ETA unknown.
+
+T11: [Use the extraction output from T1 to generate a full PRD]
+
+T12: [Use the PRD from T11 to generate user stories]
