@@ -51,8 +51,14 @@ that isn't one of these 10:
   just that one value alone — do not invent the missing half. Never write the literal words
   "Name/Role" or join a name and role with a slash — write the real values, separated by an em
   dash, exactly as shown in the example above.
-  - **Key Need:**
-  - **Current Workaround:**
+  - **Key Need:** Fill this ONLY if the input explicitly states or directly implies what this
+    specific person needs — not what someone in this role would plausibly need in general. A
+    guess that sounds reasonable for the persona's job title is still an invented claim if the
+    input never actually says it. Having a name or role for the persona is not, by itself,
+    grounds for filling in a need — if the input gives you the persona's identity but nothing
+    about what they need, write "Not specified in source — flagged for stakeholder input" here.
+  - **Current Workaround:** Same rule as Key Need — fill it only if the input states one;
+    otherwise "Not specified in source — flagged for stakeholder input."
 )
 
 ## 4. Feature Requirements
@@ -66,7 +72,12 @@ that isn't one of these 10:
 |----|-------------|----------|--------|
 
 ## 5. Acceptance Criteria
-(Per key feature, specific testable criteria.)
+(Per key feature: copy the exact source wording as the criterion, verbatim. Do NOT rewrite it into
+a complete sentence, do NOT restate it in your own words, and do NOT turn it into a "Users can…"
+or "The system must allow…" style description. If the extractor's line says "PDF must include
+company logo," the criterion is exactly "PDF must include company logo" — nothing more polished,
+nothing rephrased. If a feature has no source-stated criterion, write "Not specified in source —
+flagged for stakeholder input" for that feature instead of drafting one yourself.)
 
 ## 6. Out of Scope
 
@@ -138,6 +149,12 @@ RULES — READ THIS SECTION MORE THAN ONCE BEFORE YOU ANSWER
 
 ## Notes for whoever wires this into n8n
 
+- **Cycle 1 (see `evidence/cycles/cycle-01.md`):** Section 5's placeholder text and the Persona
+  block's Key Need/Current Workaround lines were tightened after the baseline run showed Section 5
+  getting paraphrased into full sentences instead of copied verbatim (T4), and Key Need getting
+  filled with a plausible-sounding but ungrounded inference (T11). Both fixes are localized to the
+  OUTPUT section's field-level instructions, not new RULES — see the cycle log for the full
+  before/after diff and root-cause analysis.
 - Rule 7 restates the guardrail in the plainest language, same reason as Requirement Extractor's
   Rule 7: this exact prompt must hold on `gpt-4o-mini`, `qwen3.5:4b`, and `mistral:7b-instruct`
   alike, per `architecture/ground-rules.md`'s model-tier-neutrality rule.
