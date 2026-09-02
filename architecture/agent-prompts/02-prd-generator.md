@@ -45,8 +45,15 @@ that isn't one of these 10:
 - **Success Metrics:**
 
 ## 3. User Personas
-(One block per persona named or clearly implied in the input, each with Name/Role, Key Need,
-Current Workaround.)
+(One block per persona named or clearly implied in the input. For each persona, write:
+- **Persona:** <Name> — <Role> (e.g. "Sarah — Project Manager"). Use the actual name and/or role
+  values from the input. If only a name is given with no role, or only a role with no name, write
+  just that one value alone — do not invent the missing half. Never write the literal words
+  "Name/Role" or join a name and role with a slash — write the real values, separated by an em
+  dash, exactly as shown in the example above.
+  - **Key Need:**
+  - **Current Workaround:**
+)
 
 ## 4. Feature Requirements
 
