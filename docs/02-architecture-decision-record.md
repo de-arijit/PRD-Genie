@@ -45,6 +45,25 @@ a settled choice. One entry per significant decision; add more as needed.*
 - *Managed backend (Supabase)* — rejected in favor of self-hosting, to stay consistent with the local-first/privacy-first principle already applied elsewhere in the stack.
 **Consequences:** New infrastructure to run and keep alive (tunnel uptime is a real dependency); documented explicitly in the Environment Readiness checklist so it isn't discovered broken late.
 
+## ADR-005: n8n's OpenAI node — use the `text`/`response` operation, not `message`
+
+**Status:** Accepted
+**Context:** This n8n instance runs the `@n8n/n8n-nodes-langchain.openAi` node at v2.3. The node's
+own bundled source rejects the `message` operation (valid on v1) as invalid on v2 — only
+`resource: text` / `operation: response` (the Responses API) passes validation. Discovered while
+wiring the Setup-phase thin-slice proof; not documented anywhere obvious in n8n's own UI error
+messaging, so it cost real debugging time.
+**Decision:** Every OpenAI node built for this pipeline (all 4 agents) uses `resource: text`,
+`operation: response`. Do not reintroduce `message` — it will fail node validation on this n8n
+version.
+**Alternatives considered:**
+- *Pin n8n to an older version supporting `message`* — rejected. No reason to fight the installed
+  version; `response` works identically for this project's single-turn, no-conversation-history
+  use case.
+**Consequences:** None functionally — this is a compatibility note, not a design trade-off. Recorded
+here so agents 2–4 (PRD Generator, Story Breakdown, Gap Analyzer) don't rediscover the same node
+validation error from scratch during Baseline phase.
+
 ---
 
-*Add ADR-005+ here for any decision made during the Loop phase that a future reader would otherwise have to reverse-engineer from prompt diffs alone.*
+*Add ADR-006+ here for any decision made during the Loop phase that a future reader would otherwise have to reverse-engineer from prompt diffs alone.*
