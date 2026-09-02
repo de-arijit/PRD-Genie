@@ -25,6 +25,7 @@ Thumbs.db
 *.swp
 .vscode/
 .idea/
+.claude/
 
 # n8n local runtime (not the exported workflow JSON, which IS committed)
 n8n/.n8n/
