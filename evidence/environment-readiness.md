@@ -52,11 +52,14 @@ which one a client reached depended on IP version, not on any actual fix needed:
 
 ## Workflow platform
 
-- [ ] n8n OpenAI node configured and tested with a trivial prompt — not done, out of scope for this
-      task (pipeline-building work for a later task).
-- [ ] n8n Ollama node configured and tested against `qwen3.5:4b` — not done, same reason. (Now
-      unblocked — the correct endpoint for this node to use will be
-      `http://host.docker.internal:11434`.)
+- [x] n8n OpenAI node configured and tested with a trivial prompt — done as part of the thin-slice
+      proof below (not a separate trivial test; the real T1 run doubles as this check). Node type
+      `@n8n/n8n-nodes-langchain.openAi` v2.3, resource `text` / operation `response` (this n8n
+      version's Responses API operation — its own node description explicitly warns the older
+      `message` operation is invalid on v2), model `gpt-4o-mini`, credential `AD-IK-OpenAI`.
+- [ ] n8n Ollama node configured and tested against `qwen3.5:4b` — not done, out of scope for this
+      task (fallback routing is Baseline/Loop-phase work). The correct endpoint for this node, once
+      built, will be `http://host.docker.internal:11434`.
 - [ ] Fallback logic sketched — not done, same reason.
 
 ## Data
@@ -73,12 +76,22 @@ which one a client reached depended on IP version, not on any actual fix needed:
 
 ## Thin-slice proof (Sprint 1's actual deliverable)
 
-- [ ] One agent (Requirement Extractor) built — not started, this task's explicit scope boundary
-      (next task's work, gated on this one).
-- [ ] Run against T1 only — not started, same reason.
-- [ ] Output manually verified — not started, same reason.
-- [ ] **Sign-off:** thin slice works end-to-end — not reached yet, but no longer blocked on
-      environment issues — everything this phase needed to unblock is now in place.
+- [x] One agent (Requirement Extractor) built — system prompt written to
+      `architecture/agent-prompts/01-requirement-extractor.md` (ROLE/INPUT/OUTPUT/RULES structure),
+      wired into n8n as workflow "PRD Genie - Thin Slice - Requirement Extractor" (manual trigger →
+      OpenAI node), imported/executed via n8n CLI (no browser access available; n8n's REST API needs
+      a login this session doesn't have).
+- [x] Run against T1 only — executed once via
+      `n8n execute --id=0da58f21-edcb-4cb6-b2a4-c5a7261f51c4` (a throwaway sibling container sharing
+      the running instance's data volume, since `n8n execute` inside the already-running container
+      conflicts with its own live Task Broker port). `gpt-4o-mini`, 1157 input / 149 output tokens,
+      4.85s. Single run only, not iterated — see Task 4's Summary for the full verbatim output.
+- [x] Output manually verified against T1's "Expected Output Must Contain" criteria — **PASSED**, all
+      4 required elements present, each traced to an exact verbatim quote from the T1 source text
+      (programmatically confirmed via substring match, not eyeballed). `hallucination_detected:
+      false` — nothing in the output falls outside the source text; the one UNKNOWN flag
+      (implementation ownership) is the correct guardrail behavior, not an invented requirement.
+- [x] **Sign-off:** thin slice works end-to-end — proceed to Baseline phase.
 
 ## Eval service pre-check (used starting Day 9, confirmed reachable now to avoid a Day-9 surprise)
 
@@ -103,6 +116,7 @@ which one a client reached depended on IP version, not on any actual fix needed:
 **Readiness verdict:** ☒ Green — proceed to Baseline phase ☐ Yellow — proceed with noted gaps: ___________ ☐ Red — blocked on: ___________
 
 All items in scope for Setup-phase readiness now pass: OpenAI, both Ollama fallback tiers (via the
-correct HTTP endpoint), n8n (via Docker), the 5 sample data files (organized in `sample-data/`), and
-the eval-service/cloudflared pre-checks. Items intentionally out of scope remain unchecked and are
-not gaps: Langfuse, n8n node configuration, and the thin-slice proof itself.
+correct HTTP endpoint), n8n (via Docker), the 5 sample data files (organized in `sample-data/`), the
+eval-service/cloudflared pre-checks, and — as of this update — the thin-slice proof itself (one
+agent, one test input, passed end-to-end). Items intentionally out of scope remain unchecked and are
+not gaps: Langfuse, the Ollama node/fallback logic (Baseline/Loop-phase work).
