@@ -19,24 +19,29 @@ separate fields (`passed`, `hallucination_detected`), not folded into one bit.
 | T3 | Contradictory | identifies the refresh-rate vs. minimize-API-calls conflict; flags for stakeholder resolution | silently resolves the conflict in favor of one side |
 | T5 | Incomplete | flags as insufficient; lists what's missing (dashboard scope, "real-time" definition, budget) | fills gaps with assumptions |
 | T6 | Multi-stakeholder | captures all 3 viewpoints (Eng/microservices, Design/SPA, PM/March); identifies the tension | favors or drops any one viewpoint |
-| T7 | Technical | exact numbers preserved: 10,000 users, 200ms p95, Salesforce REST API v52 | rounds or modifies any number |
+| T7 | Technical | exact numbers preserved: 10,000 users, 200ms p95, Salesforce REST API v52 (NFR classification is scored separately, at PRD Generation — see note below) | rounds or modifies any number |
 | T8 | Persona-heavy | 3 distinct personas (Admin, End User, Auditor), separate stories per persona | merges personas into generic "users" |
 | T9 | Empty | flags "no requirements extractable"; produces no PRD content | generates any PRD-shaped content from nothing |
 | T10 | Dependency | extracts SSO feature; flags dependency on Team Alpha's auth service; flags unknown ETA as a risk | omits the dependency or invents an ETA |
 
 ## Capability: PRD Generation
 
+*T7's NFR classification is scored here, not at Requirement Extraction: PASS if PRD Generator's
+Non-Functional Requirements table (section 4.2) contains all three of T7's numbers, correctly
+categorized (e.g. Performance, Scalability, Integration) rather than left in the Functional
+Requirements table or dropped. Requirement Extractor has no FR/NFR concept in its own output
+format by design — that split is PRD Generator's job, per `prd_template.md`'s own structure.*
+
 | Test | PASS if | FAIL if |
 |------|---------|---------|
-| T4 | Acceptance criteria extracted verbatim in Section 5 (PDF logo, CSV formula preservation) | adds criteria not stated, or paraphrases the AC away from verbatim |
-| T7 (NFR note) | Section 4.2's Non-Functional Requirements table classifies all 3 technical constraints (10,000 users, 200ms p95, Salesforce REST API v52) as NFRs, numbers preserved exactly | omits any of the 3 from the NFR table, rounds/modifies a number, or misclassifies a constraint as a Functional Requirement instead |
+| T4 | Acceptance criteria extracted verbatim (PDF logo, CSV formula preservation) in PRD Generator's Section 5 | adds criteria not stated, or paraphrases the AC away from verbatim, in Section 5 |
 | T11 | Follows `prd_template.md` structure section-for-section; every section traceable to T1's extraction; no section invented from general PRD "best practice" | skips a template section, reorders it, or fills a section with generic filler |
 
 ## Capability: Epic / User Story Breakdown
 
 | Test | PASS if | FAIL if |
 |------|---------|---------|
-| T4 (story stage) | User Stories carry forward the same verbatim acceptance criteria from PRD Section 5 (PDF logo, CSV formula preservation), unparaphrased | paraphrases the AC away from verbatim when converting to stories, or omits either criterion |
+| T4 (Story Breakdown stage) | User Stories generated from T4's PRD carry the exact same verbatim criteria as Section 5, unparaphrased | Story Breakdown's own output paraphrases or drops a criterion present in the PRD it was given |
 | T12 | Epics/User Stories in "As a [persona], I want…" format; each carries a Must/Should/Nice priority | missing priority tags, or format drifts from the "As a…" pattern |
 
 ## Capability: Gap Analysis (extended)

@@ -64,6 +64,47 @@ version.
 here so agents 2–4 (PRD Generator, Story Breakdown, Gap Analyzer) don't rediscover the same node
 validation error from scratch during Baseline phase.
 
+## ADR-006: Story Breakdown carries verbatim acceptance criteria in a separate line, not inside the story sentence
+
+**Status:** Accepted
+**Context:** The corrected `ground-rules.md` requires T4's Story-Breakdown-stage output to carry
+PRD Section 5's acceptance criteria forward "verbatim, unparaphrased." But every story is also
+required (T12, and Story Breakdown's own Rule 3) to follow the fixed sentence
+"As a [persona], I want [goal], so that [benefit]." — a format that structurally requires
+rephrasing a declarative criterion ("PDF must include company logo") into a first-person want
+clause ("I want the PDF to include the company logo"). Cycle 1's re-score confirmed this tension is
+real, not hypothetical: the story sentence correctly reflected each requirement, but the wording
+was paraphrased by construction, failing T4's story-stage verbatim check.
+**Decision:** Keep the "As a…, I want…, so that…" sentence exactly as-is — it's allowed to
+paraphrase, and should, for readability. Add a second, separate line under each story,
+`Acceptance Criteria: "<verbatim text>"`, sourced from PRD Section 5 and copied
+character-for-character. The two lines have different jobs: the sentence communicates intent in
+natural language, the criteria line preserves the exact source wording for traceability. Story
+Breakdown's INPUT section was extended to read PRD Section 5 (previously explicitly excluded), and
+a new Rule 4 states the separation directly: the sentence may paraphrase, the criteria line may
+not.
+**Alternatives considered:**
+- *Relax the ground rule's "unparaphrased" wording for the story stage specifically* — rejected.
+  The verbatim requirement is a direct extension of T4's own Section-5 rule and the project's core
+  hallucination-prevention theme; loosening it because the story format is inconvenient trades away
+  the thing this project is scored on, for the sake of prompt convenience.
+- *Drop the "As a…, I want…" format for T4-derived stories only, replacing it with the raw
+  criterion* — rejected. T12's format rule applies uniformly across all stories; carving out a
+  format exception for one requirement's origin (T4 vs. any other PRD) would make Story Breakdown's
+  output inconsistent depending on upstream provenance, and downstream consumers (a human reading
+  the story list) would see two different story shapes for no visible reason.
+- *Embed the verbatim quote inside the "I want" clause itself* (e.g. "I want the PDF to include the
+  company logo, exactly as stated: 'PDF must include company logo'") — rejected. This produces an
+  awkward, redundant sentence and still risks the model paraphrasing the embedded quote under
+  pressure to keep the sentence readable — the whole point of a separate line is that it isn't
+  competing with prose-quality pressure.
+**Consequences:** Every story's output is one line longer when a Section 5 criterion exists for its
+requirement (most will; T9/T2/T5-style insufficient inputs that never reach Story Breakdown are
+unaffected). Slightly more output tokens per story — acceptable given this project's cost priority
+is Section-5-template-injection-driven PRD Generator cost (see `ground-rules.md`'s token-estimate
+section), not Story Breakdown's. Re-scored once against T4's story stage after the change — see
+`evidence/cycles/cycle-02.md` for the confirming result.
+
 ---
 
-*Add ADR-006+ here for any decision made during the Loop phase that a future reader would otherwise have to reverse-engineer from prompt diffs alone.*
+*Add ADR-007+ here for any decision made during the Loop phase that a future reader would otherwise have to reverse-engineer from prompt diffs alone.*

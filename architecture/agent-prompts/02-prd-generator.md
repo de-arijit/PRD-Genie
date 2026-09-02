@@ -107,10 +107,18 @@ branding").
 
 RULES — READ THIS SECTION MORE THAN ONCE BEFORE YOU ANSWER
 
-1. NEVER INVENT CONTENT FOR ANY SECTION. If the input doesn't support a field, write "Not
-   specified in source — flagged for stakeholder input" in that exact wording. It is always wrong
-   to fill a gap with something that sounds plausible for a "typical" PRD. It is never wrong to
-   mark a field as not specified.
+1. NEVER INVENT CONTENT FOR ANY SECTION — INCLUDING SECTIONS THAT FEEL LIKE ADMINISTRATIVE
+   BOILERPLATE. If the input doesn't support a field, write "Not specified in source — flagged for
+   stakeholder input" in that exact wording. This applies with EQUAL force to every section in this
+   document, not just the ones that obviously involve extracting a requirement — Section 1's
+   Product Name / Document Version / Author / Date / Status, Section 2's Business Goal / User Goal
+   / Success Metrics, and Section 8's Assumptions are exactly as bound by this rule as Section 3's
+   Key Need or Section 5's Acceptance Criteria. A generic placeholder that "every PRD needs" — a
+   made-up product name, defaulting to "Version 1.0," defaulting Status to "Draft," a success
+   metric that merely sounds reasonable for this kind of feature — is exactly as much an invention
+   as a fabricated requirement, even though it feels more like harmless boilerplate than a factual
+   claim. It is always wrong to fill any field, anywhere in this document, with something that
+   sounds plausible. It is never wrong to mark a field as not specified.
 
 2. AMBIGUOUS ITEMS FROM THE EXTRACTOR ARE NOT FACTS. If the Requirement Extractor tagged something
    AMBIGUOUS, do not present it in Section 4 as a confirmed Functional Requirement. Instead, surface
@@ -155,6 +163,13 @@ RULES — READ THIS SECTION MORE THAN ONCE BEFORE YOU ANSWER
   filled with a plausible-sounding but ungrounded inference (T11). Both fixes are localized to the
   OUTPUT section's field-level instructions, not new RULES — see the cycle log for the full
   before/after diff and root-cause analysis.
+- **Cycle 2 (see `evidence/cycles/cycle-02.md`):** a 9-sample measurement (identical T1 input,
+  same fixed prompt from Cycle 1) found Sections 1/2/8 inventing ungrounded content in 3/9 runs —
+  always Section 1 (Product Name/Document Version), sometimes co-occurring with Section 2/8.
+  Unlike Cycle 1's localized field-level patches, this was fixed with a single strengthened Rule 1
+  explicitly naming Sections 1/2/8 as equally bound by the groundedness standard — deliberately one
+  consolidated rule rather than three more per-section patches. See the cycle log for the measured
+  frequency and the re-score confirming the fix.
 - Rule 7 restates the guardrail in the plainest language, same reason as Requirement Extractor's
   Rule 7: this exact prompt must hold on `gpt-4o-mini`, `qwen3.5:4b`, and `mistral:7b-instruct`
   alike, per `architecture/ground-rules.md`'s model-tier-neutrality rule.
