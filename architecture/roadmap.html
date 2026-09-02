@@ -1,0 +1,1016 @@
+<title>PRD Genie Roadmap</title>
+<style>
+:root{
+  --ink:#12213B;
+  --body:#2B3648;
+  --muted:#64748B;
+  --bg:#F4F6F9;
+  --surface:#FFFFFF;
+  --border:#DCE2EA;
+  --accent:#0E7C86;
+  --accent-soft:#E3F1F1;
+  --warn:#B7791F;
+  --warn-soft:#FBF0DD;
+  --crit:#B5423B;
+  --crit-soft:#FBEAE8;
+  --chip-bg:#EEF1F6;
+  --code-bg:#101B2D;
+  --code-text:#DCE7F5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#EAF0FA;
+    --body:#C7D1E0;
+    --muted:#8B97AC;
+    --bg:#0C1220;
+    --surface:#141C2E;
+    --border:#26314A;
+    --accent:#4FD1D9;
+    --accent-soft:#123138;
+    --warn:#E3B155;
+    --warn-soft:#332711;
+    --crit:#E68079;
+    --crit-soft:#3A1815;
+    --chip-bg:#1B2438;
+    --code-bg:#080D18;
+    --code-text:#CBDAF0;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#EAF0FA;
+  --body:#C7D1E0;
+  --muted:#8B97AC;
+  --bg:#0C1220;
+  --surface:#141C2E;
+  --border:#26314A;
+  --accent:#4FD1D9;
+  --accent-soft:#123138;
+  --warn:#E3B155;
+  --warn-soft:#332711;
+  --crit:#E68079;
+  --crit-soft:#3A1815;
+  --chip-bg:#1B2438;
+  --code-bg:#080D18;
+  --code-text:#CBDAF0;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--body);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:15.5px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{
+  font-family:'Newsreader',Georgia,serif;
+  color:var(--ink);
+  text-wrap:balance;
+  margin:0;
+}
+code, .mono{
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+}
+
+/* ---------- shell layout ---------- */
+.shell{
+  display:grid;
+  grid-template-columns:260px minmax(0,1fr);
+  max-width:1240px;
+  margin:0 auto;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;}
+  .sidebar{position:static !important; height:auto !important; border-right:none !important; border-bottom:1px solid var(--border);}
+}
+
+.sidebar{
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  padding:28px 20px 28px 28px;
+  border-right:1px solid var(--border);
+}
+.brand{
+  font-family:'Newsreader',serif;
+  font-size:1.25rem;
+  font-weight:600;
+  color:var(--ink);
+  margin-bottom:2px;
+}
+.brand-sub{
+  font-size:.72rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:26px;
+}
+.nav-group{margin-bottom:22px;}
+.nav-label{
+  font-size:.68rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+  font-weight:600;
+}
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 8px;
+  margin:0 -8px;
+  border-radius:6px;
+  color:var(--body);
+  text-decoration:none;
+  font-size:.86rem;
+  transition:background .15s;
+}
+.nav-link:hover{background:var(--chip-bg);}
+.nav-link .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--border);
+  flex-shrink:0;
+}
+.nav-link.week1 .dot{background:var(--accent);}
+.nav-link.week2 .dot{background:var(--warn);}
+
+.main{padding:40px 44px 80px;min-width:0;}
+
+/* ---------- header ---------- */
+.hero{margin-bottom:8px;}
+.eyebrow{
+  font-size:.72rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:10px;
+}
+.hero h1{font-size:2.1rem;font-weight:600;letter-spacing:-.01em;}
+.hero p.lede{
+  color:var(--muted);
+  font-size:1rem;
+  max-width:60ch;
+  margin-top:10px;
+}
+
+.meta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:22px 0 36px;
+}
+.meta-chip{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:.8rem;
+  color:var(--body);
+}
+.meta-chip b{color:var(--ink);font-weight:600;}
+.meta-chip .mono{color:var(--accent);}
+
+/* ---------- section scaffolding ---------- */
+section{margin-bottom:52px;scroll-margin-top:20px;}
+.section-head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  margin-bottom:16px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.section-head h2{font-size:1.4rem;font-weight:600;}
+.section-head .pts{
+  font-size:.75rem;
+  color:var(--muted);
+  font-family:'Inter';
+  white-space:nowrap;
+}
+
+p{margin:0 0 12px;}
+.callout{
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  background:var(--surface);
+  border-radius:0 8px 8px 0;
+  padding:14px 18px;
+  margin:16px 0;
+  font-size:.92rem;
+}
+.callout.warn{border-left-color:var(--warn);}
+.callout.crit{border-left-color:var(--crit);}
+.callout b{color:var(--ink);}
+
+/* ---------- decision cards (project selection) ---------- */
+.decision-banner{
+  background:var(--accent-soft);
+  border:1px solid var(--accent);
+  border-radius:10px;
+  padding:20px 22px;
+  margin-bottom:20px;
+}
+.decision-banner .label{
+  font-size:.7rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:6px;
+}
+.decision-banner h3{font-size:1.15rem;margin-bottom:8px;}
+.decision-banner p{color:var(--body);font-size:.92rem;margin-bottom:0;}
+
+.reason-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+  margin:18px 0 8px;
+}
+.reason-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:14px 16px;
+}
+.reason-card .k{
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:5px;
+}
+.reason-card .v{font-size:.86rem;color:var(--body);}
+
+/* ---------- phase headers ---------- */
+.phase-header{
+  display:grid;
+  grid-template-columns:64px minmax(0,1fr);
+  gap:20px;
+  margin:36px 0 18px;
+}
+.phase-header:first-child{margin-top:0;}
+.phase-rail{display:flex;flex-direction:column;align-items:center;}
+.phase-marker{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--surface);
+  font-family:'JetBrains Mono';font-weight:700;font-size:1rem;
+  flex-shrink:0;z-index:1;
+}
+.phase-body{
+  background:var(--ink);
+  border-radius:10px;
+  padding:16px 22px;
+  color:var(--surface);
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+}
+.phase-body .name{font-family:'Newsreader',serif;font-size:1.15rem;font-weight:600;color:var(--surface);}
+.phase-body .ref{font-size:.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;display:block;}
+.phase-body .days{font-family:'JetBrains Mono';font-size:.78rem;color:#B9C4D6;white-space:nowrap;}
+.phase-artifact{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(79,209,217,.14);
+  border:1px solid var(--accent);
+  border-radius:20px;
+  padding:5px 12px;
+  font-size:.76rem;
+  color:var(--accent);
+  white-space:nowrap;
+}
+
+/* ---------- timeline (days) ---------- */
+.timeline{position:relative;}
+.day{
+  display:grid;
+  grid-template-columns:64px minmax(0,1fr);
+  gap:20px;
+  position:relative;
+}
+.day-rail{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.day-num{
+  width:44px;height:44px;
+  border-radius:50%;
+  background:var(--surface);
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono';
+  font-weight:600;
+  font-size:.82rem;
+  color:var(--muted);
+  flex-shrink:0;
+  z-index:1;
+}
+.day.milestone .day-num{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+.day-line{
+  width:2px;
+  flex:1;
+  background:var(--border);
+  margin-top:6px;
+}
+.day:last-child .day-line{display:none;}
+
+.day-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:18px 22px;
+  margin-bottom:22px;
+}
+.day-card h4{
+  font-size:1.02rem;
+  font-weight:600;
+  margin-bottom:3px;
+  font-family:'Inter';
+  color:var(--ink);
+}
+.day-tag{
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
+  margin-bottom:10px;
+  display:block;
+}
+.day-tasks{list-style:none;padding:0;margin:0 0 10px;}
+.day-tasks li{
+  position:relative;
+  padding-left:18px;
+  margin-bottom:7px;
+  font-size:.88rem;
+}
+.day-tasks li::before{
+  content:'';
+  position:absolute;left:0;top:.55em;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--border);
+}
+.day-tasks li.crit::before{background:var(--crit);}
+.day-tasks li b{color:var(--ink);}
+
+.day-footer{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px dashed var(--border);
+}
+.tagchip{
+  font-size:.72rem;
+  padding:3px 9px;
+  border-radius:20px;
+  background:var(--chip-bg);
+  color:var(--body);
+}
+.tagchip.rubric{background:var(--accent-soft);color:var(--accent);font-weight:600;font-family:'JetBrains Mono';}
+.tagchip.crit-tag{background:var(--crit-soft);color:var(--crit);font-weight:600;}
+
+/* ---------- agent architecture diagram ---------- */
+.arch{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:26px;
+  margin:18px 0;
+  overflow-x:auto;
+}
+.arch-flow{
+  display:flex;
+  align-items:stretch;
+  gap:0;
+  min-width:820px;
+}
+.arch-box{
+  flex:1;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  padding:14px 12px;
+  text-align:center;
+  position:relative;
+}
+.arch-box.agent{border-color:var(--accent);background:var(--accent-soft);}
+.arch-box .t{font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.arch-box .d{font-size:.72rem;color:var(--muted);line-height:1.4;}
+.arch-arrow{
+  display:flex;align-items:center;justify-content:center;
+  width:34px;flex-shrink:0;
+  color:var(--muted);
+  font-size:1.1rem;
+}
+.arch-io{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-family:'JetBrains Mono';
+  font-size:.68rem;
+  color:var(--muted);
+  min-width:820px;
+}
+
+/* ---------- table ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;background:var(--surface);}
+th{
+  text-align:left;
+  background:var(--chip-bg);
+  color:var(--ink);
+  font-weight:600;
+  padding:10px 14px;
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  white-space:nowrap;
+}
+td{padding:11px 14px;border-top:1px solid var(--border);vertical-align:top;}
+tr:hover td{background:var(--bg);}
+td.mono{font-family:'JetBrains Mono';font-size:.8rem;color:var(--accent);}
+
+/* ---------- risk grid ---------- */
+.risk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.risk-card{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px 18px;
+  background:var(--surface);
+}
+.risk-card .sev{
+  display:inline-block;
+  font-size:.68rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  padding:2px 8px;
+  border-radius:5px;
+  margin-bottom:8px;
+}
+.sev.high{background:var(--crit-soft);color:var(--crit);}
+.sev.med{background:var(--warn-soft);color:var(--warn);}
+.risk-card h4{font-size:.92rem;margin-bottom:6px;}
+.risk-card p{font-size:.82rem;color:var(--muted);margin-bottom:0;}
+
+/* ---------- checklist ---------- */
+.checklist{list-style:none;padding:0;margin:0;}
+.checklist li{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  padding:9px 0;
+  border-bottom:1px solid var(--border);
+  font-size:.88rem;
+}
+.checklist li:last-child{border-bottom:none;}
+.checklist .box{
+  width:16px;height:16px;flex-shrink:0;margin-top:2px;
+  border:1.5px solid var(--muted);
+  border-radius:4px;
+}
+
+footer{
+  margin-top:60px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:.78rem;
+}
+</style>
+
+<div class="shell">
+  <nav class="sidebar">
+    <div class="brand">PRD Genie</div>
+    <div class="brand-sub">Capstone Roadmap</div>
+
+    <div class="nav-group">
+      <div class="nav-label">Orientation</div>
+      <a class="nav-link" href="#why"><span class="dot"></span>Why PRD Genie</a>
+      <a class="nav-link" href="#architecture"><span class="dot"></span>Agent architecture</a>
+      <a class="nav-link" href="#stack"><span class="dot"></span>Tool stack</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">6-Phase Plan</div>
+      <a class="nav-link week1" href="#phase-discovery"><span class="dot"></span>1 · Discovery (Days 1–2)</a>
+      <a class="nav-link week1" href="#phase-setup"><span class="dot"></span>2 · Setup (Day 3)</a>
+      <a class="nav-link week1" href="#phase-baseline"><span class="dot"></span>3 · Baseline (Days 4–7)</a>
+      <a class="nav-link week2" href="#phase-loop"><span class="dot"></span>4 · The Loop (Days 8–11)</a>
+      <a class="nav-link week2" href="#phase-hardening"><span class="dot"></span>5 · Hardening (Days 12–14)</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Day Detail</div>
+      <a class="nav-link" href="#day1"><span class="dot"></span>Day 1–2 · Scope & charter</a>
+      <a class="nav-link" href="#day3"><span class="dot"></span>Day 3–4 · Extractor agent</a>
+      <a class="nav-link" href="#day5"><span class="dot"></span>Day 5–6 · PRD Generator</a>
+      <a class="nav-link" href="#day7"><span class="dot"></span>Day 7 · Story Breakdown</a>
+      <a class="nav-link" href="#day8"><span class="dot"></span>Day 8–9 · Gap Analyzer</a>
+      <a class="nav-link" href="#day10"><span class="dot"></span>Day 10 · Observability</a>
+      <a class="nav-link" href="#day11"><span class="dot"></span>Day 11–12 · Eval cycles</a>
+      <a class="nav-link" href="#day13"><span class="dot"></span>Day 13 · Writeup & cost</a>
+      <a class="nav-link" href="#day14"><span class="dot"></span>Day 14 · Submit</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Reference</div>
+      <a class="nav-link" href="#evalsystem"><span class="dot"></span>Live eval system</a>
+      <a class="nav-link" href="#rubric"><span class="dot"></span>Rubric map</a>
+      <a class="nav-link" href="#risks"><span class="dot"></span>Hallucination risks</a>
+      <a class="nav-link" href="#checklist"><span class="dot"></span>Submission checklist</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="hero">
+      <div class="eyebrow">Applied Agentic AI for PMs/TPMs — Capstone</div>
+      <h1>PRD Genie: AI-Powered Product Documentation Assistant</h1>
+      <p class="lede">A 14-day build plan for NeuronForge's documentation assistant — a sequential pipeline that turns messy meeting transcripts into structured PRDs and user stories, without inventing a single requirement that wasn't said out loud.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-chip">📅 <b>14 days</b> total runway</div>
+      <div class="meta-chip">🧩 <span class="mono">Sequential Pipeline</span> orchestration</div>
+      <div class="meta-chip">🖥️ <b>IK's OpenAI key</b> primary · Ollama (qwen3.5 → mistral) fallback</div>
+      <div class="meta-chip">🤖 <b>4 agents</b> · 3 core + 1 extended</div>
+      <div class="meta-chip">🎯 <b>90 pts</b> across Q1–Q4</div>
+      <div class="meta-chip">🧪 <b>12</b> baseline test cases</div>
+      <div class="meta-chip">📈 Live dashboard · FastAPI + SQLite bridge</div>
+      <div class="meta-chip">🎥 <b>Demo video required</b> · 5 min</div>
+    </div>
+
+    <section id="why">
+      <div class="section-head"><h2>Why PRD Genie, and why this shape</h2></div>
+      <p>Of the four capstone options, only the PRD Genie problem statement and its matching sample data (transcripts, stakeholder notes, product brief, PRD template, baseline eval set) were provided — so the project is already chosen. What's left to decide is the internal design, and the problem statement itself recommends the shape below.</p>
+
+      <div class="reason-grid">
+        <div class="reason-card"><div class="k">Setup complexity</div><div class="v">File uploads only — no OAuth2, no live API credentials. Fastest path to a working v1.</div></div>
+        <div class="reason-card"><div class="k">Pattern fit</div><div class="v">Every input takes the identical route: transcript → requirements → PRD → stories. That sameness is the textbook signal for a <b>Sequential Pipeline</b>, not a Router.</div></div>
+        <div class="reason-card"><div class="k">Richest test data</div><div class="v">5 transcripts spanning detailed, vague, contradictory, and empty — built specifically to expose hallucination.</div></div>
+        <div class="reason-card"><div class="k">Grounding is explicit</div><div class="v">The rubric's core skill — stated vs. assumed — is graded directly by 8 of the 12 baseline tests (T2, T3, T5, T6, T9 especially).</div></div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <div class="section-head"><h2>Agent architecture</h2><span class="pts">Design worth 10 of 45 pts on Q3</span></div>
+      <p>Four agents, one direction of travel. Each has exactly one job, a fixed input/output contract, and — per the playbook's hallucination guardrail — an explicit instruction for what to do when it doesn't have enough information.</p>
+
+      <div class="arch">
+        <div class="arch-io"><span>INPUT: transcript.txt / notes.txt / brief.txt</span><span>OUTPUT: PRD.md + user stories + gap questions</span></div>
+        <div class="arch-flow">
+          <div class="arch-box agent">
+            <div class="t">1 · Requirement Extractor</div>
+            <div class="d">Parses raw text. Separates <b>stated</b> facts from <b>ambiguous/assumed</b> ones. Flags contradictions and missing fields.</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box agent">
+            <div class="t">2 · PRD Generator</div>
+            <div class="d">Maps extracted fields into <span class="mono">prd_template.md</span> structure. Leaves a section blank rather than inventing content.</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box agent">
+            <div class="t">3 · Story Breakdown</div>
+            <div class="d">Converts PRD features into Epics → User Stories ("As a…") with Must/Should/Nice priority.</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box agent">
+            <div class="t">4 · Gap Analyzer <span class="mono" style="font-size:.65rem">(extended)</span></div>
+            <div class="d">Reads the Extractor's ambiguous-item list and produces stakeholder-ready clarification questions.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout"><b>Hallucination guardrail, in every agent's prompt:</b> "Only use information explicitly stated in the input. If the input is too vague to determine X, say UNKNOWN or list it as an open question — do NOT invent X." This single rule is what T2, T5, and T9 are testing for.</div>
+      <div class="callout warn"><b>The guardrail has to hold across both tiers of the fallback chain.</b> OpenAI (primary) will generally respect an UNKNOWN rule with less coaxing. qwen3.5:4b (fallback) is far more likely to "helpfully" fill a gap rather than say UNKNOWN — so write the prompt to the fallback tier's weaknesses, not the primary tier's strengths, and re-test T9 on whichever tier actually served the response. Budget for extra guardrail iteration inside Day 4 and Day 11.</div>
+    </section>
+
+    <section id="stack">
+      <div class="section-head"><h2>Tool stack</h2><span class="pts">Rationale required in writeup</span></div>
+      <div class="callout crit"><b>Constraint: OpenAI (IK's key) primary, local models as fallback chain.</b> Every agent calls the IK-provided OpenAI key first. If a step fails or the key is unavailable, drop to qwen3.5:4b locally via Ollama; if that step is still weak (typically PRD Generator), drop again to mistral:7b-instruct. No Claude, no Gemini, no other cloud key.</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Category</th><th>Choice</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Workflow platform</td><td class="mono">n8n</td><td>Already wired to local Ollama from the AI Tutor / NovaCart builds, and n8n's OpenAI node is equally native — one platform covers both tiers of the fallback chain.</td></tr>
+            <tr><td>LLM — primary, all 4 agents</td><td class="mono">OpenAI (IK-provided key)</td><td>Strongest instruction-following of the available options, especially for holding the 10-section PRD template and refusing to fill gaps on vague/empty input (T2, T9). Use gpt-4o-mini by default; step up to gpt-4o only if the mini tier misses on baseline tests.</td></tr>
+            <tr><td>LLM — first fallback, all 4 agents</td><td class="mono">qwen3.5:4b</td><td>Already pulled locally via Ollama. Used automatically if the OpenAI key errors, rate-limits, or is unavailable — keeps the pipeline runnable offline.</td></tr>
+            <tr><td>LLM — second fallback, PRD Generator only</td><td class="mono">mistral:7b-instruct-q4_K_M</td><td>Swap in only if qwen3.5:4b's PRD output drifts from the <span class="mono">prd_template.md</span> structure on T11. Larger, instruction-tuned models tend to hold long templates more reliably at this size.</td></tr>
+            <tr><td>Document ingestion</td><td class="mono">File upload node</td><td>All five inputs are .txt/.md — no OCR, no OAuth needed.</td></tr>
+            <tr><td>Observability</td><td class="mono">Langfuse</td><td>Free tier sufficient; per-agent trace view makes the evaluation loop (Step 6) tractable — and lets you see which tier of the fallback chain actually served each run.</td></tr>
+            <tr><td>Output format</td><td class="mono">Markdown</td><td>Matches <span class="mono">prd_template.md</span> exactly — no lossy conversion.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn"><b>Trace which tier served each run.</b> With a 2–3 tier fallback chain, a baseline test can pass on OpenAI but fail on qwen3.5:4b (or vice versa) — log which model actually produced each output, not just pass/fail, so your writeup can speak to model-level differences rather than one aggregate score. Watch for the same two failure modes on the local tiers specifically: (1) filling template sections with generic boilerplate instead of "open question" when data is missing (breaks T9), and (2) paraphrasing exact numbers (breaks T7's 10,000 users / 200ms p95 / Salesforce v52).</div>
+    </section>
+
+    <section id="timeline">
+      <div class="section-head"><h2>14-day plan, in 6 phases</h2><span class="pts">Compressed from a real 10–12 week agentic AI engagement shape</span></div>
+      <p>A real forward-deployed engagement runs Discovery → Setup → Baseline → an iteration Loop (where most of the value sits) → Hardening/Handover, typically over 10–12 weeks with a 4–5 person pod. This plan compresses the same six phases into 14 solo days — the proportions carry over even though the absolute time doesn't: the Loop still gets the largest share of build time, and every phase ends with a named artifact a TPM would actually leave behind, not just a checklist.</p>
+      <div class="callout warn"><b>Playbook's #1 failure mode:</b> building all 4 agents before testing any of them. This plan tests each agent independently before wiring the next one in.</div>
+
+      <div class="timeline">
+
+        <div class="phase-header" id="phase-discovery">
+          <div class="phase-rail"><div class="phase-marker">1</div></div>
+          <div class="phase-body">
+            <div><span class="ref">Discovery</span><span class="name">Problem framing &amp; charter</span></div>
+            <span class="phase-artifact">📋 01-problem-charter-brief.md</span>
+            <span class="days">Days 1–2</span>
+          </div>
+        </div>
+
+        <div class="day" id="day1">
+          <div class="day-rail"><div class="day-num">01</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 1 — Understand & scope</span>
+            <h4>Read the problem, write the 3-sentence summary</h4>
+            <ul class="day-tasks">
+              <li>Read all 5 input files end to end; note which transcripts are clean vs. deliberately messy (T2/T3/T5-style).</li>
+              <li>Answer Step 1's guiding questions: who's the user (PM/TPM), what's wasted (manual transcript→PRD translation), what's the biggest risk (inventing a requirement never discussed).</li>
+              <li class="crit"><b>Checkpoint:</b> write the 3-sentence problem summary — this becomes the opening of both Q1 and the writeup.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Q1 · 15 pts</span><span class="tagchip">Ideation</span></div>
+          </div>
+        </div>
+
+        <div class="day" id="day1b">
+          <div class="day-rail"><div class="day-num">02</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 2 — Program charter</span>
+            <h4>Draft the PRD Genie charter</h4>
+            <ul class="day-tasks">
+              <li>Vision, objectives, in/out of scope, success criteria (e.g. "0% invented requirements on baseline set"), rough timeline, top 3 risks, stakeholders (PM, Eng, Design), rollout plan.</li>
+              <li><b>State one specific rollout number and reuse it everywhere.</b> The other three capstone projects each commit to a figure in their reflection (CalendarMate: 50 PMs/TPMs, SalesGenie: 20 reps, Mira: 10 PMs/TPMs) — PRD Genie's charter should state its own (e.g. "N PMs/TPMs across the Product & Innovation team") now, and the Q4 reflection must reuse the same figure, not a different guess written independently later.</li>
+              <li>Set up n8n project + Langfuse account now. Confirm IK's OpenAI key is active in n8n's OpenAI node, and separately confirm Ollama is serving <span class="mono">qwen3.5:4b</span> and reachable — both tiers of the fallback chain need to work before Day 3, not get discovered broken on build day.</li>
+              <li><b>Write the per-agent token estimates now</b>, before any prompt exists — see <span class="mono">ground-rules.md</span> → "Token estimates," already grounded in the actual input files' measured sizes. This is the target Day 11's optimization cycle measures against; setting it after the fact defeats the point.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Q2 · 15 pts</span><span class="tagchip">Program Charter</span><span class="tagchip">Tooling setup</span><span class="tagchip">Token estimates set</span></div>
+          </div>
+        </div>
+
+        <div class="phase-header" id="phase-setup">
+          <div class="phase-rail"><div class="phase-marker">2</div></div>
+          <div class="phase-body">
+            <div><span class="ref">Setup — Sprint 1 equivalent</span><span class="name">Access, tooling, thin slice</span></div>
+            <span class="phase-artifact">✅ 02-environment-readiness.md</span>
+            <span class="days">Day 3</span>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day3">
+          <div class="day-rail"><div class="day-num">03</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 3 — First agent, single input</span>
+            <h4>Build the Requirement Extractor against T1 alone</h4>
+            <ul class="day-tasks">
+              <li>One agent, one prompt, one test case (<span class="mono">T1</span> — the detailed transcript). Prove the pipeline can run end to end before adding complexity.</li>
+              <li>Prompt must explicitly separate <b>stated</b> vs <b>ambiguous</b> fields, per the playbook's ROLE/INPUT/OUTPUT/RULES template.</li>
+              <li>Check output contains: filter by date/category/status, 2-second load time, PM Sarah, Q3 deadline — nothing more.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Q3 · Core caps (12 pts)</span><span class="tagchip">Agent 1/4</span></div>
+          </div>
+        </div>
+
+        <div class="phase-header" id="phase-baseline">
+          <div class="phase-rail"><div class="phase-marker">3</div></div>
+          <div class="phase-body">
+            <div><span class="ref">Baseline — Sprint 2 equivalent</span><span class="name">Ground truth, first baseline</span></div>
+            <span class="phase-artifact">📊 03-baseline-test-report.md</span>
+            <span class="days">Days 4–7</span>
+          </div>
+        </div>
+
+        <div class="day" id="day4">
+          <div class="day-rail"><div class="day-num">04</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 4 — Stress-test the Extractor</span>
+            <h4>Run T2, T3, T5, T6, T9 against the same agent</h4>
+            <ul class="day-tasks">
+              <li><span class="mono">T2</span> (vague) — must flag ambiguous, list missing info, must NOT invent specifics.</li>
+              <li><span class="mono">T3</span> (contradictory) — must surface the refresh-rate-vs-API-load conflict, not silently pick a side.</li>
+              <li><span class="mono">T5</span> (incomplete) — must flag insufficient, not fill gaps.</li>
+              <li><span class="mono">T6</span> (multi-stakeholder) — must capture all 3 viewpoints without favoring one.</li>
+              <li class="crit"><span class="mono">T9</span> (empty) — "Meeting happened. Notes: none." must produce nothing, not a fabricated PRD. This is the single hardest guardrail to pass.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Baseline testing</span><span class="tagchip">Hallucination guardrail</span></div>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day5">
+          <div class="day-rail"><div class="day-num">05</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 5 — Second agent</span>
+            <h4>Build the PRD Generator, wire Extractor → Generator</h4>
+            <ul class="day-tasks">
+              <li>Feed <span class="mono">prd_template.md</span> into the system prompt as the exact output schema — overview, goals, personas, functional/non-functional requirements, acceptance criteria, out of scope, dependencies, assumptions, open questions, timeline.</li>
+              <li>Run <span class="mono">T11</span> (generate PRD from T1 extraction). Verify every section is populated only from T1's content — no external "best practice" filler.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Q3 · Core caps</span><span class="tagchip">Agent 2/4</span></div>
+          </div>
+        </div>
+
+        <div class="day" id="day6">
+          <div class="day-rail"><div class="day-num">06</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 6 — Harden the Generator</span>
+            <h4>Run remaining detailed/technical cases through the full 2-agent chain</h4>
+            <ul class="day-tasks">
+              <li><span class="mono">T4</span> — acceptance criteria must be extracted verbatim, no additions (PDF logo, CSV formula preservation).</li>
+              <li><span class="mono">T7</span> — exact numbers preserved: 10,000 users, 200ms p95, Salesforce v52. No rounding.</li>
+              <li><span class="mono">T8</span> — 3 personas (Admin, End User, Auditor) kept distinct, not merged into one generic user.</li>
+              <li><span class="mono">T10</span> — SSO dependency on Team Alpha's auth service flagged as a risk with unknown ETA.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Baseline testing</span></div>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day7">
+          <div class="day-rail"><div class="day-num">07</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 7 — Third agent, core loop complete</span>
+            <h4>Build Story Breakdown, close the 3-agent core pipeline</h4>
+            <ul class="day-tasks">
+              <li>Converts each PRD feature into Epics → User Stories in "As a [persona], I want…" format, each tagged Must/Should/Nice.</li>
+              <li>Run <span class="mono">T12</span> (break T11's PRD into stories). Confirm priority suggestions are present.</li>
+              <li class="crit"><b>Milestone:</b> the full required pipeline (Extract → Generate → Breakdown) now runs end to end on at least one input. This satisfies the "3 core capabilities" requirement.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Q3 · Core caps complete</span><span class="tagchip">Agent 3/4</span></div>
+          </div>
+        </div>
+
+        <div class="phase-header" id="phase-loop">
+          <div class="phase-rail"><div class="phase-marker">4</div></div>
+          <div class="phase-body">
+            <div><span class="ref">The Loop — Sprints 3–5 equivalent</span><span class="name">Most of the value lives here</span></div>
+            <span class="phase-artifact">🔁 cycle-template.md ×3</span>
+            <span class="days">Days 8–11</span>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day8">
+          <div class="day-rail"><div class="day-num">08</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 8 — Extended capability</span>
+            <h4>Build the Gap Analyzer</h4>
+            <ul class="day-tasks">
+              <li>Recommended over Scope Estimator and Version Comparison — it reuses the Extractor's "ambiguous items" list you're already producing, so it's the lowest-effort extended capability with the highest payoff against the hallucination theme.</li>
+              <li>Input: ambiguous/missing fields from Requirement Extractor. Output: a numbered list of stakeholder-ready clarification questions (e.g., for T2 — "What metrics? What output format? Which user segment?").</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Q3 · Extended (8 pts)</span><span class="tagchip">Agent 4/4</span></div>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day9">
+          <div class="day-rail"><div class="day-num">09</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 9 — Full pipeline regression + eval service</span>
+            <h4>Run all 12 baseline inputs; stand up the eval-results service</h4>
+            <ul class="day-tasks">
+              <li>Every test ID (T1–T12) through the finished pipeline in one sitting. Copy every output into your results doc as you go — don't batch this for later.</li>
+              <li>Note any regressions the Gap Analyzer introduced to earlier agents' outputs.</li>
+              <li>Stand up <span class="mono">eval-service/main.py</span> (FastAPI + SQLite) locally — this is what turns raw test runs into the live dashboard's numbers. Expose it via Cloudflare Tunnel so it's reachable outside your machine.</li>
+              <li>Wire an n8n HTTP Request node after each test case to POST its result to <span class="mono">/results</span>, scored against <span class="mono">ground-rules.md</span> (pass/fail + hallucination flag, per test).</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Baseline dataset · 5 pts</span><span class="tagchip">Eval service build</span></div>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day10">
+          <div class="day-rail"><div class="day-num">10</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 10 — Observability + live dashboard</span>
+            <h4>Connect Langfuse traces; bring the dashboard online</h4>
+            <ul class="day-tasks">
+              <li>Verify: Langfuse traces appear for every pipeline run, input/output visible per agent, token usage + latency + cost visible per agent — not just per pipeline.</li>
+              <li>Pull one trace for a vague input (T2) and one for a detailed input (T1). Compare token cost — vague inputs that trigger longer "clarification" outputs often cost more, which is worth noting in your writeup.</li>
+              <li>Confirm the scheduled refresh task can reach the tunnel URL and pull <span class="mono">/summary</span> successfully; it will regenerate <span class="mono">dashboard.html</span> every 30 minutes and hand you the updated file.</li>
+              <li>Cross-check one number by hand: does the dashboard's hallucination rate match what you counted manually in Langfuse? Catching a scoring-logic bug here is cheaper than catching it on Day 13.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Observability · 5 pts</span><span class="tagchip">Live dashboard online</span></div>
+          </div>
+        </div>
+
+        <div class="day" id="day11">
+          <div class="day-rail"><div class="day-num">11</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 11 — Evaluate and iterate</span>
+            <h4>Run correctness AND token-optimization cycles, both documented</h4>
+            <ul class="day-tasks">
+              <li>Inspect traces for T9 and T2 specifically — these are where models most often slip and invent content, and where the fallback tier is weakest (see Tool Stack note above).</li>
+              <li>Copy <span class="mono">cycle-template.md</span> for this cycle. Fill all 5 stages as you go, not retroactively — Learn and Change are much harder to reconstruct from memory afterward. Mark each cycle's type: Correctness, Token optimization, or Both.</li>
+              <li><b>Correctness cycle:</b> identify which agent produced the failure, add a guardrail line to that agent's prompt. Re-score: re-run the same input, then the full 12 to check for regressions.</li>
+              <li><b>Token-optimization cycle:</b> check the dashboard's Token Usage panel — target whichever agent shows the largest positive variance (PRD Generator is the likely first target — see <span class="mono">ground-rules.md</span> → "Where to optimize"). Change the prompt/template handling to reduce tokens, then re-score BOTH token count and correctness — a shorter prompt that also drops the UNKNOWN guardrail is a regression, not a win.</li>
+              <li>POST the cycle's summary to <span class="mono">/cycles</span> so it shows up in the dashboard's cycle log automatically on next refresh.</li>
+              <li>Aim for at least 2 full cycles by end of day — a correctness cycle and a token-optimization cycle, so the writeup can show both loops in action, not just one.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Cost/eval strategy · 5 pts</span><span class="tagchip">Q4 groundwork</span><span class="tagchip">Token optimization</span></div>
+          </div>
+        </div>
+
+        <div class="phase-header" id="phase-hardening">
+          <div class="phase-rail"><div class="phase-marker">5</div></div>
+          <div class="phase-body">
+            <div><span class="ref">Hardening / Handover — Sprint 6 equivalent</span><span class="name">Docs, decisions, submission</span></div>
+            <span class="phase-artifact">🗂️ ADR + Runbook + Handover</span>
+            <span class="days">Days 12–14</span>
+          </div>
+        </div>
+
+        <div class="day" id="day12">
+          <div class="day-rail"><div class="day-num">12</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 12 — Buffer / stretch</span>
+            <h4>Optional depth: fine-tuning or a second extended capability</h4>
+            <ul class="day-tasks">
+              <li>If time allows: fine-tune the Requirement Extractor on 10–15 stated-vs-assumed examples (5 of them deliberately vague, expecting "UNKNOWN" outputs). Not required, but explicitly recognized in scoring. Fine-tune the local qwen3.5:4b fallback tier specifically — that's where the guardrail is weakest and where a small LoRA-scale dataset can move the needle most; OpenAI's primary tier is already strong enough here that fine-tuning it isn't worth the cost.</li>
+              <li>If time is tight instead: use this day purely as regression buffer — do not start anything new that risks the core pipeline.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip">Optional</span><span class="tagchip">Buffer day</span></div>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day13">
+          <div class="day-rail"><div class="day-num">13</div><div class="day-line"></div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 13 — Documentation</span>
+            <h4>Architecture writeup, ADR, runbook, cost analysis</h4>
+            <ul class="day-tasks">
+              <li>1–2 page writeup: problem summary, architecture diagram (now including the eval-service pipeline), tool table with rationale, orchestration justification, per-agent description, cost per user/day, production metrics (technical + business tiers), testing observations (what broke, what you fixed), and the OTel tradeoff note from the Live Evaluation System section.</li>
+              <li>Fill <span class="mono">04-architecture-decision-record.md</span> — the 4 decisions already drafted (orchestration pattern, model fallback chain, OTel deferral, eval service shape) plus any decision made during the Loop phase worth recording.</li>
+              <li>Fill <span class="mono">05-runbook-handover.md</span> — how to run the pipeline, how to run an eval cycle, known limitations stated plainly, what a future iteration should do next.</li>
+              <li>Pull your 2+ completed cycle logs from <span class="mono">cycle-template.md</span> directly into the "testing observations" section — they're already written in submission-ready language.</li>
+              <li>Cost analysis now has two tiers: (1) OpenAI path — tokens/run × gpt-4o-mini pricing × expected runs/day (a PM generating ~2–3 PRDs/day is a reasonable volume assumption); (2) local fallback path — $0 marginal cost, just compute/electricity, for whatever share of runs fall through to qwen3.5:4b or mistral. State what fraction of your baseline runs actually needed the fallback — that ratio is itself a useful production metric.</li>
+              <li>3 production metrics to commit to: <span class="mono">extraction completeness</span> (% of stated requirements captured), <span class="mono">hallucination rate</span> (% of PRD items not traceable to source transcript), <span class="mono">format compliance</span> (% of PRDs following the template exactly).</li>
+              <li>Draft Q4 reflection: trace findings, improvement plan, risks of AI-generated PRDs reaching engineering unreviewed, connection to evaluation skills. Reuse the exact rollout number from the Day 2 charter — don't restate it from memory.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Q3 design · 10 pts</span><span class="tagchip rubric">Q4 · 5 pts</span></div>
+          </div>
+        </div>
+
+        <div class="day milestone" id="day14">
+          <div class="day-rail"><div class="day-num">14</div></div>
+          <div class="day-card">
+            <span class="day-tag">Day 14 — Package & submit</span>
+            <h4>Assemble the public GitHub repo and submit</h4>
+            <ul class="day-tasks">
+              <li>Export the n8n workflow as JSON → <span class="mono">n8n/prd-genie-pipeline.json</span> in the repo, with README.</li>
+              <li>Screenshots into <span class="mono">evidence/screenshots/</span>: workflow canvas, pipeline in action, Langfuse traces (one detailed input, one vague/edge-case input).</li>
+              <li>Architecture diagram (any format — even hand-drawn + phone photo is accepted per the playbook) + slide deck summarizing problem/approach/outcomes.</li>
+              <li class="crit"><b>Record the 5-minute demo video now, don't leave it for a Day-14 scramble.</b> PRD Genie is one of only two capstone projects that requires one (PRD Genie + SalesGenie; CalendarMate and Mira don't) — record it once the pipeline is stable, ideally Day 12–13, not same-day as submission.</li>
+              <li>Rotate/remove the eval-service <span class="mono">API_KEY</span> and confirm <span class="mono">.env</span> is gitignored before making the repo public — see repo README's housekeeping checklist.</li>
+              <li>Final check: all 12 baseline results documented with pass/fail per test, all 4 assignment questions answered.</li>
+            </ul>
+            <div class="day-footer"><span class="tagchip rubric">Submission complete</span><span class="tagchip crit-tag">Demo video required</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="evalsystem">
+      <div class="section-head"><h2>Live evaluation system</h2><span class="pts">Beyond baseline — Q3 depth + Q4 evidence</span></div>
+      <p>The playbook's Step 6 loop — Run → Score → Learn → Change → Re-score — is usually done ad hoc and half-remembered by submission day. This project makes it a small piece of real infrastructure instead: every cycle is scored against a written ground-truth spec, logged automatically, and visible as a dashboard that updates itself.</p>
+
+      <div class="arch">
+        <div class="arch-io"><span>SOURCE: n8n pipeline runs</span><span>DESTINATION: dashboard.html, refreshed</span></div>
+        <div class="arch-flow">
+          <div class="arch-box">
+            <div class="t">n8n pipeline</div>
+            <div class="d">After each test case, an HTTP Request node POSTs the result to the eval service.</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box agent">
+            <div class="t">Eval service <span class="mono" style="font-size:.65rem">FastAPI + SQLite</span></div>
+            <div class="d">Scores against <span class="mono">ground-rules.md</span>, stores per-test/per-agent results (incl. tokens on every tier), computes estimate-vs-actual, exposes <span class="mono">/summary</span>.</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box">
+            <div class="t">Cloudflare Tunnel</div>
+            <div class="d">Exposes the local service so it's reachable outside your machine.</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box agent">
+            <div class="t">Scheduled task</div>
+            <div class="d">Every 30 min: pulls <span class="mono">/summary</span>, regenerates <span class="mono">dashboard.html</span>, delivers the updated file.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reason-grid">
+        <div class="reason-card"><div class="k">Ground rules</div><div class="v"><span class="mono">ground-rules.md</span> — the 12 baseline tests expanded into explicit pass/fail criteria, plus a Gap Analysis rubric. This is the "ground truth" every cycle scores against.</div></div>
+        <div class="reason-card"><div class="k">Cycle documentation</div><div class="v"><span class="mono">cycle-template.md</span> — one filled copy per Run→Score→Learn→Change→Re-score iteration. Feeds the dashboard's cycle log and the Q3/Q4 writeup directly.</div></div>
+        <div class="reason-card"><div class="k">Two metric tiers</div><div class="v">Technical (hallucination rate, extraction completeness, format compliance, fallback rate, latency) answers "does it work." Business (time saved, cost/PRD, draft-readiness, requirement-loss prevented) answers "is it worth it."</div></div>
+        <div class="reason-card"><div class="k">Token estimate vs. actual</div><div class="v">Per-agent token targets set Day 2 (see ground-rules.md), logged live from every call on every tier, compared and ranked by variance — the dashboard's "optimize this next" list, not just a cost figure after the fact.</div></div>
+        <div class="reason-card"><div class="k">Delivery</div><div class="v">A regenerated <span class="mono">dashboard.html</span> file, not a hosted page — works with or without a persistent public URL, and ships cleanly inside the GitHub repo.</div></div>
+      </div>
+
+      <div class="callout"><b>OpenTelemetry — documented, not built.</b> Given the 14-day clock, this project stays on Langfuse's native SDK rather than standing up a full OTel Collector. Langfuse is itself OTel-compatible: the documented upgrade path is n8n emitting spans via an OTel SDK → a local OTel Collector → OTLP export into Langfuse (or any OTel backend), which would decouple instrumentation from the trace-viewer choice entirely. Write this up explicitly in the Q3 design section as a considered tradeoff, not an omission — it demonstrates the same architectural judgment without spending a build day on it.</div>
+    </section>
+
+    <section id="rubric">
+      <div class="section-head"><h2>Rubric map</h2><span class="pts">90 points total</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Focus</th><th>Points</th><th>Built on</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">Q1</td><td>Ideation — pain points, agent solution, inputs/outputs, risks</td><td>15</td><td>Day 1</td></tr>
+            <tr><td class="mono">Q2</td><td>Program charter — vision, scope, success criteria, rollout</td><td>15</td><td>Day 2</td></tr>
+            <tr><td class="mono">Q3a</td><td>Design — architecture + orchestration + tool rationale</td><td>10</td><td>Days 1–2, 13</td></tr>
+            <tr><td class="mono">Q3b</td><td>Core capabilities end-to-end</td><td>12</td><td>Days 3–7</td></tr>
+            <tr><td class="mono">Q3c</td><td>Extended capability</td><td>8</td><td>Day 8</td></tr>
+            <tr><td class="mono">Q3d</td><td>Observability connected</td><td>5</td><td>Day 10</td></tr>
+            <tr><td class="mono">Q3e</td><td>Baseline dataset tested with results</td><td>5</td><td>Days 4, 6, 9</td></tr>
+            <tr><td class="mono">Q3f</td><td>Cost analysis and evaluation strategy</td><td>5</td><td>Days 11, 13</td></tr>
+            <tr><td class="mono">Q4</td><td>Reflection — trace findings, risks, improvement plan</td><td>5</td><td>Day 13</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="risks">
+      <div class="section-head"><h2>Where hallucination is most likely to hit</h2></div>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <span class="sev high">High</span>
+          <h4>T9 — empty transcript</h4>
+          <p>"Meeting happened. Notes: none." Weakly-prompted models will still produce a generic PRD because that's the "helpful" default. The Extractor's UNKNOWN rule has to override the model's instinct to be useful.</p>
+        </div>
+        <div class="risk-card">
+          <span class="sev high">High</span>
+          <h4>T2 — vague AI request</h4>
+          <p>"Something like what Competitor X has" invites the model to invent plausible-sounding features. Must produce a question list, not a spec.</p>
+        </div>
+        <div class="risk-card">
+          <span class="sev med">Medium</span>
+          <h4>T3 — contradictory requirements</h4>
+          <p>5-second refresh vs. minimize API calls. Models tend to silently resolve conflicts in favor of whichever was stated last. Must surface the tension instead.</p>
+        </div>
+        <div class="risk-card">
+          <span class="sev med">Medium</span>
+          <h4>T7 — exact technical numbers</h4>
+          <p>10,000 users / 200ms p95 / Salesforce v52. Generation steps sometimes round or paraphrase numbers when restructuring into NFR format.</p>
+        </div>
+        <div class="risk-card">
+          <span class="sev med">Medium</span>
+          <h4>Chained hallucination (T11→T12)</h4>
+          <p>An invented detail in the PRD Generator's output silently becomes a "requirement" by the time Story Breakdown runs. Trace both steps together, not just individually.</p>
+        </div>
+        <div class="risk-card">
+          <span class="sev med">Medium</span>
+          <h4>Template drift</h4>
+          <p>PRD Generator gradually reordering or renaming <span class="mono">prd_template.md</span> sections across different inputs — breaks the "format compliance" production metric.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="checklist">
+      <div class="section-head"><h2>Submission checklist</h2><span class="pts">Public GitHub repo — everything below ships there</span></div>
+      <div class="callout crit"><b>PRD Genie requires a 5-minute demo video.</b> Only PRD Genie and SalesGenie do — CalendarMate and Mira don't ask for one. It's the single most commonly missed item across all four projects. Record it Day 12–13, once the pipeline is stable — not as a Day-14 scramble.</div>
+
+      <h4 style="margin:24px 0 10px;font-size:1rem;">Always required</h4>
+      <ul class="checklist">
+        <li><span class="box"></span>Workflow exported as JSON → <span class="mono">n8n/prd-genie-pipeline.json</span>, in a public GitHub repo with a README</li>
+        <li><span class="box"></span>Architecture diagram, any format → <span class="mono">architecture/diagram.*</span> (a text-form version already exists in this roadmap's Agent Architecture section)</li>
+        <li><span class="box"></span>Baseline test results — every one of the 12 inputs, with outputs → <span class="mono">evidence/baseline-runs/baseline-test-report.md</span></li>
+        <li><span class="box"></span>Screenshots: canvas, system in action, observability traces → <span class="mono">evidence/screenshots/</span></li>
+        <li><span class="box"></span>1–2 page architecture write-up, all required sections → <span class="mono">docs/</span></li>
+        <li><span class="box"></span>Cost analysis and 3+ production metrics (technical + business tiers) → included in the write-up, sourced from <span class="mono">architecture/ground-rules.md</span></li>
+        <li><span class="box"></span>All assignment questions answered (Q1–Q4)</li>
+        <li><span class="box"></span>Slide deck summarizing problem, approach, and outcomes</li>
+      </ul>
+
+      <h4 style="margin:24px 0 10px;font-size:1rem;">Project-specific — PRD Genie</h4>
+      <ul class="checklist">
+        <li><span class="box"></span><b>5-minute demo video</b> — required for PRD Genie (and SalesGenie); not required for CalendarMate or Mira. Do not skip on the assumption it's optional across all four projects.</li>
+        <li><span class="box"></span>Rollout number in the Q2 charter and Q4 reflection are consistent with each other — CalendarMate/SalesGenie/Mira each state a specific rollout figure (50 PMs/TPMs, 20 reps, 10 PMs/TPMs); PRD Genie's charter should state its own comparable figure and use the same number in both places, not two different guesses.</li>
+      </ul>
+
+      <h4 style="margin:24px 0 10px;font-size:1rem;">This project's extra artifacts</h4>
+      <ul class="checklist">
+        <li><span class="box"></span><span class="mono">architecture/ground-rules.md</span> (scoring spec + token estimates), <span class="mono">evidence/cycles/</span> (2+ filled cycle logs), <span class="mono">evidence/dashboard.html</span> (current)</li>
+        <li><span class="box"></span><span class="mono">eval-service/</span> (main.py + README) included, with the real API key rotated/removed and <span class="mono">.env</span> confirmed gitignored before making the repo public</li>
+        <li><span class="box"></span><span class="mono">docs/</span>: Problem &amp; Charter Brief, Architecture Decision Record, Runbook &amp; Handover; <span class="mono">evidence/environment-readiness.md</span></li>
+        <li><span class="box"></span>GitHub repository public link submitted — capstone lives in its own repo, separate from weekly assignments</li>
+      </ul>
+    </section>
+
+    <footer>PRD Genie capstone roadmap · Applied Agentic AI for PMs/TPMs · built for a 14-day sprint against the NeuronForge problem statement.</footer>
+  </main>
+</div>

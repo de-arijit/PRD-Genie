@@ -1,26 +1,30 @@
-# secrets
+# Secrets — never commit these
 .env
 .env.*
-!.env.example
 *secret*
 *_key*
 *api_key*
 config.local.*
 
-# eval service
-eval-service/eval_results.db
-*.db
-__pycache__/
-*.pyc
-venv/
-.venv/
+# ...but template/example files ARE meant to be committed (they document required
+# vars without real values) — exempt anything ending .example from the patterns above
+!*.example
+!.env.example
 
-# OS / editor
+# Eval service runtime data (recreated locally; not meant to be version-controlled)
+eval-service/eval_results.db
+eval-service/*.db
+eval-service/__pycache__/
+eval-service/*.pyc
+eval-service/.venv/
+eval-service/venv/
+
+# OS / editor cruft
 .DS_Store
 Thumbs.db
 *.swp
 .vscode/
 .idea/
 
-# n8n local runtime (NOT the exported workflow JSON -- that IS committed)
+# n8n local runtime (not the exported workflow JSON, which IS committed)
 n8n/.n8n/
