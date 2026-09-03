@@ -26,7 +26,9 @@ three parts of it:
 - Section 3 (User Personas) — for the persona names to write stories from.
 - Section 4.1 (Functional Requirements table) — the actual features to break into stories.
 - Section 5 (Acceptance Criteria) — the verbatim criteria to attach to a story, when one exists for
-  that requirement.
+  that requirement. Each Section 5 bullet is prefixed with the FR ID it belongs to (e.g.
+  `FR-002: "PDF must include company logo."`) — use that ID to match it to its row, not the
+  wording.
 Ignore Sections 1-2 and 6-10 entirely; do not pull facts from them into your output, and do not let
 them influence which stories you write.
 
@@ -57,12 +59,15 @@ Rules for filling this format:
   forward too, do not strip it or hide it.
 - source: the Functional Requirement's own ID (e.g. FR-001), so the story is traceable back to the
   PRD row it came from.
-- Acceptance Criteria: find the bullet in Section 5 that corresponds to this same requirement (it
-  will reference the same underlying source quote as this row's Source column). Copy that bullet's
-  text verbatim, character-for-character — do not paraphrase it, do not fold it into the "I want…"
-  sentence above, do not shorten or polish it. If Section 5 has no bullet corresponding to this
-  specific requirement, omit the "Acceptance Criteria:" line entirely for that story — do not
-  invent one.
+- Acceptance Criteria: this is a mechanical lookup, not a judgment call. This row has an FR ID
+  (e.g. `FR-002`). Find the Section 5 bullet whose prefix is that EXACT same ID — do not match by
+  wording similarity, do not match by position in the list, match ONLY by the ID string being
+  identical. Copy everything after that bullet's `FR-XXX:` prefix, verbatim, character-for-character
+  — do not paraphrase it, do not fold it into the "I want…" sentence above, do not shorten or
+  polish it, and do not include the `FR-XXX:` prefix itself in your output line (only the quoted
+  text after it). If no Section 5 bullet carries this row's exact FR ID, omit the "Acceptance
+  Criteria:" line entirely for that story — do not invent one, and do not attach a criterion
+  belonging to a different FR ID just because it looks similar.
 
 If the PRD's Functional Requirements table (Section 4.1) has no rows to work from — for instance if
 every row says "Not specified in source" — do not invent stories. Your entire response must instead
@@ -123,6 +128,14 @@ RULES — READ THIS SECTION MORE THAN ONCE BEFORE YOU ANSWER
   the tension between the corrected ground-rules.md's "verbatim, unparaphrased" requirement for T4's
   story stage and the mandatory story-sentence format, which necessarily paraphrases. See ADR-006
   for why this resolution was chosen over the alternatives considered.
+- **Cycle 3 (see `evidence/cycles/cycle-03.md`):** Cycle 2 confirmed ADR-006's design was sound
+  but found matching unreliable (3/4 observed) — the instruction asked the model to infer which
+  Section 5 bullet belonged to which FR row by wording similarity. Fixed at the source: PRD
+  Generator's Section 5 bullets now carry an `FR-XXX:` ID prefix (see that prompt's own Cycle 3
+  note), so this agent's matching instruction changed from "find the corresponding bullet" to an
+  exact ID-string lookup — a mechanical operation, not an inference. This is a hard dependency on
+  PRD Generator's Section 5 format; if that ID-prefix convention ever changes, this agent's
+  matching instruction needs to change with it, in the same commit.
 - Rule 8 restates the guardrail in the plainest language, same reason as the earlier two agents:
   this exact prompt must hold on `gpt-4o-mini`, `qwen3.5:4b`, and `mistral:7b-instruct` alike, per
   `architecture/ground-rules.md`'s model-tier-neutrality rule.

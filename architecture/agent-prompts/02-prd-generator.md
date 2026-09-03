@@ -66,18 +66,37 @@ that isn't one of these 10:
 ### 4.1 Functional Requirements
 | ID | Requirement | Priority (Must/Should/Nice) | Source |
 |----|-------------|------------------------------|--------|
+(A measurable technical constraint — throughput, latency, a specific external API/version,
+security/compliance — belongs in Section 4.2 below, not here. Classify each requirement into
+exactly one of the two tables, never both.)
 
 ### 4.2 Non-Functional Requirements
 | ID | Requirement | Category | Target |
 |----|-------------|----------|--------|
+(Route a requirement HERE instead of Section 4.1 when it describes a measurable technical
+constraint on how the system performs, rather than a user-facing capability someone would frame as
+"I want to...". Concretely:
+- Throughput or capacity numbers (e.g. "must support 10,000 concurrent users") → Category:
+  Scalability.
+- Latency or response-time numbers (e.g. "response time < 200ms at p95") → Category: Performance.
+- A specific external API, integration, or third-party version reference (e.g. "must integrate
+  with Salesforce REST API v52") → Category: Integration.
+- A security or compliance constraint → Category: Security.
+Use the exact same verbatim-numbers discipline as Section 4.1 — do not round or modify a number
+when moving it here. A single input can produce several NFR rows if it states several such
+constraints; do not merge them into one row or drop any of them. If nothing in the input describes
+this kind of constraint, write "Not specified in source — flagged for stakeholder input" in every
+column of a single row, matching this document's other empty-state tables.)
 
 ## 5. Acceptance Criteria
-(Per key feature: copy the exact source wording as the criterion, verbatim. Do NOT rewrite it into
-a complete sentence, do NOT restate it in your own words, and do NOT turn it into a "Users can…"
-or "The system must allow…" style description. If the extractor's line says "PDF must include
-company logo," the criterion is exactly "PDF must include company logo" — nothing more polished,
-nothing rephrased. If a feature has no source-stated criterion, write "Not specified in source —
-flagged for stakeholder input" for that feature instead of drafting one yourself.)
+(Per key feature: copy the exact source wording as the criterion, verbatim, prefixed with the same
+FR ID that requirement has in Section 4.1's table, e.g. `FR-002: "PDF must include company logo."`
+— this ID prefix is required so a later pipeline step can match each criterion back to its exact
+requirement without guessing. Do NOT rewrite the quoted part into a complete sentence, do NOT
+restate it in your own words, and do NOT turn it into a "Users can…" or "The system must allow…"
+style description — only the `FR-XXX:` prefix is your own addition, everything in quotes after it
+must be the untouched source wording. If a feature has no source-stated criterion, write no line
+for that FR ID at all — do not invent one just to have every ID represented.)
 
 ## 6. Out of Scope
 
@@ -170,8 +189,26 @@ RULES — READ THIS SECTION MORE THAN ONCE BEFORE YOU ANSWER
   explicitly naming Sections 1/2/8 as equally bound by the groundedness standard — deliberately one
   consolidated rule rather than three more per-section patches. See the cycle log for the measured
   frequency and the re-score confirming the fix.
+- **Cycle 3 (see `evidence/cycles/cycle-03.md`):** two changes attempted, one shipped. (1) SHIPPED:
+  Section 5's acceptance criteria now carry an `FR-XXX:` ID prefix matching Section 4.1's own row
+  IDs, so Story Breakdown can match a criterion to its story by exact ID instead of inferring from
+  wording — closes the matching-reliability gap Cycle 2 found (3/4 observed), confirmed 10/10 (100%)
+  across 5 fresh full-chain runs. (2) NOT SHIPPED — reverted after making things worse: NFR
+  classification (Section 4.2) was still failing (0/3 on a fresh confirmation, Section 4.2 left
+  empty with every constraint filed under 4.1) with only the inline OUTPUT-section parenthetical
+  from Cycle 1/2's era. Following the precedent of this log's Cycle 2 entry (Sections 1/2/8 needed
+  RULES-section-level reinforcement, not just OUTPUT-section patches), the fix was escalated to a
+  new Rule 2 forcing an active per-row NFR test before finalizing Section 4. This backfired badly:
+  across two variants (Rule 2 alone, and Rule 2 plus a contrastive worked example), 5 of 5 fresh
+  confirmation runs made the model wrongly invoke the "nothing extractable" refusal (Rule 6) on an
+  input that plainly had 3 extractable requirements — a full pipeline break, strictly worse than the
+  original mis-classification. Both variants were reverted; this file's Section 4.1/4.2 text is back
+  to the pre-Rule-2 inline-parenthetical version, which reliably produces a valid PRD (just still
+  misfiles NFRs into 4.1 100% of the time in samples observed). NFR classification remains an open,
+  documented gap for a future cycle — see the cycle log for the full escalation history and the
+  reasoning for reverting rather than shipping a prompt that intermittently breaks the pipeline.
 - Rule 7 restates the guardrail in the plainest language, same reason as Requirement Extractor's
-  Rule 7: this exact prompt must hold on `gpt-4o-mini`, `qwen3.5:4b`, and `mistral:7b-instruct`
+  final rule: this exact prompt must hold on `gpt-4o-mini`, `qwen3.5:4b`, and `mistral:7b-instruct`
   alike, per `architecture/ground-rules.md`'s model-tier-neutrality rule.
 - The 10 section headings above are copied exactly from `sample-data/prd_template.md` — if that
   template file ever changes, this prompt needs to change with it, in the same commit.
