@@ -58,25 +58,46 @@ points at it.
 
 ## State (update this section every task)
 
-- **Current phase**: Discovery complete → entering Setup (Day 3 equivalent)
-- **Last completed step**: Task 2 — populated `README.md`, `CLAUDE.md`, `architecture/ground-rules.md`,
-  `architecture/cycle-template.md`, `architecture/roadmap.html`, and the five `docs/`/`evidence/`
-  TPM artifacts with real content. Replaced `.gitignore` with the general `*.example` exemption
-  (not just the one-off `.env.example` patch). Corrected two premature `[x]` checkboxes in
-  `README.md`'s status checklist (`evidence/dashboard.html`, `eval-service/` — both were falsely
-  marked done; fixed to `[ ]` to match actual repo state and stop contradicting this file's own
-  State section) and added "not yet created" caveats to two forward references to
-  `eval-service/README.md` (in `README.md` and `docs/03-runbook-handover.md`). Commit `3e119c5`,
-  pushed to `origin/main`. Follow-up corrections made directly in chat (not yet committed as of
-  this CLAUDE.md edit — land them in Task 3's first commit).
-- **Next step**: Task 3 — Setup phase (Day 3 equivalent): environment readiness verification
-  (Ollama models actually pulled and responding, OpenAI key working, n8n installed/reachable,
-  sample data files present) and a thin-slice proof (one agent, one test input, end to end) before
-  building all 4 agents. This is the first task that touches real credentials and external
-  services rather than just files — expect it to be more manual-step-heavy than Tasks 1–2.
+- **Current phase**: Baseline phase complete (3 evaluation cycles, 13/14 pass rate) → in The Loop
+  phase, building fallback infrastructure one agent at a time.
+- **Last completed step**: Loop-phase Task 1 — built and proved OpenAI→qwen3.5:4b fallback routing
+  on Requirement Extractor only (not the other 3 agents — that's explicitly gated on this task
+  proving the mechanism cleanly). In the live n8n workflow ("PRD Genie - Full Pipeline", id
+  `0da58f21-edcb-4cb6-b2a4-c5a7261f51c4`): added `onError: 'continueErrorOutput'` to the
+  Requirement Extractor OpenAI node, added a new `@n8n/n8n-nodes-langchain.ollama` node
+  (`qwen3.5:4b`, same system prompt, existing `Ollama account` credential) wired to its error
+  output, and two `Set` nodes tagging output with `{text, model_tier}` so PRD Generator/Gap
+  Analyzer can consume either tier's output uniformly (`{{ $json.text }}`). **Wiring is confirmed
+  correct**: a forced OpenAI failure (invalid model name, credential untouched) correctly routed to
+  the qwen3.5:4b branch every time, and a normal run correctly tagged `openai/gpt-4o-mini` with
+  zero qwen involvement. **The qwen3.5:4b leg itself is NOT reliable at the Requirement Extractor's
+  actual prompt size**: 3 independent attempts (2 through the full pipeline's error-routing branch,
+  1 an isolated direct call bypassing the pipeline entirely, all with the identical system prompt +
+  T1 input) **all failed** with "the connection was aborted" at 331.783s, 330.965s, and 331.920s —
+  three timings within 1 second of each other, conclusively a fixed timeout being hit (not host-load
+  variance, not pipeline overhead — the isolated direct call failed identically). The Ollama node
+  exposes no timeout override in its own options; the ~331s ceiling is coming from a global n8n or
+  Docker-level HTTP default, out of this task's scope to change unilaterally. T1 could therefore
+  NOT be scored against the qwen3.5:4b tier — every attempt to get a real completed response timed
+  out. The standalone connectivity check (a trivial "reply OK" prompt) succeeded in ~2.5-3 min,
+  proving the node/credential/model themselves work — this is specifically a large-system-prompt
+  generation time problem, not a broken connection.
+- **Next step**: Loop-phase Task 2 is **blocked** — do not extend this fallback pattern to PRD
+  Generator, Story Breakdown, or Gap Analyzer (or wire mistral:7b-instruct) until the qwen3.5:4b
+  timeout is actually fixed (raise whatever default HTTP/request timeout is being hit — candidate:
+  n8n's own default request timeout — and/or investigate why a 4B model needs >331s to process a
+  ~2,500-word system prompt on this host, and/or reduce host load — 28+ containers were running
+  throughout this task). Extending to 3 more agents on top of an unproven fallback tier would just
+  multiply an unresolved problem.
 - **Known deviations from spec, intentionally kept**:
   - `.gitignore` includes `!*.example` / `!.env.example` exemptions not in the original literal
     spec text, added because `.env.*` would otherwise silently exclude `.env.example` from every
     commit. This exemption covers any future `*.example` files too.
-- **Not yet started**: agent prompts (`architecture/agent-prompts/`), n8n workflow, eval service
-  code, baseline test runs, dashboard, cycle logs, screenshots, demo video.
+  - Ollama is reached from n8n's Docker container via `http://host.docker.internal:11434`, not
+    `localhost` — see `.env.example` and `evidence/environment-readiness.md`'s "Ollama port-11434
+    diagnosis" for the full root-cause (two unrelated Ollama-family processes on the same host both
+    listening on port 11434, resolved by IP version, not by any config change).
+- **Not yet started**: PRD Generator/Story Breakdown/Gap Analyzer fallback routing, mistral:7b
+  second fallback, eval service code, dashboard, `n8n/prd-genie-pipeline.json` export (README.md's
+  own checklist scopes this to "Day 9 onward... final on Day 14" — noted, not started prematurely),
+  screenshots, demo video.
