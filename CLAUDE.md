@@ -60,35 +60,44 @@ points at it.
 
 - **Current phase**: Baseline phase complete (3 evaluation cycles, 13/14 pass rate) → in The Loop
   phase, building fallback infrastructure one agent at a time.
-- **Last completed step**: Loop-phase Task 1 — built and proved OpenAI→qwen3.5:4b fallback routing
-  on Requirement Extractor only (not the other 3 agents — that's explicitly gated on this task
-  proving the mechanism cleanly). In the live n8n workflow ("PRD Genie - Full Pipeline", id
-  `0da58f21-edcb-4cb6-b2a4-c5a7261f51c4`): added `onError: 'continueErrorOutput'` to the
-  Requirement Extractor OpenAI node, added a new `@n8n/n8n-nodes-langchain.ollama` node
-  (`qwen3.5:4b`, same system prompt, existing `Ollama account` credential) wired to its error
-  output, and two `Set` nodes tagging output with `{text, model_tier}` so PRD Generator/Gap
-  Analyzer can consume either tier's output uniformly (`{{ $json.text }}`). **Wiring is confirmed
-  correct**: a forced OpenAI failure (invalid model name, credential untouched) correctly routed to
-  the qwen3.5:4b branch every time, and a normal run correctly tagged `openai/gpt-4o-mini` with
-  zero qwen involvement. **The qwen3.5:4b leg itself is NOT reliable at the Requirement Extractor's
-  actual prompt size**: 3 independent attempts (2 through the full pipeline's error-routing branch,
-  1 an isolated direct call bypassing the pipeline entirely, all with the identical system prompt +
-  T1 input) **all failed** with "the connection was aborted" at 331.783s, 330.965s, and 331.920s —
-  three timings within 1 second of each other, conclusively a fixed timeout being hit (not host-load
-  variance, not pipeline overhead — the isolated direct call failed identically). The Ollama node
-  exposes no timeout override in its own options; the ~331s ceiling is coming from a global n8n or
-  Docker-level HTTP default, out of this task's scope to change unilaterally. T1 could therefore
-  NOT be scored against the qwen3.5:4b tier — every attempt to get a real completed response timed
-  out. The standalone connectivity check (a trivial "reply OK" prompt) succeeded in ~2.5-3 min,
-  proving the node/credential/model themselves work — this is specifically a large-system-prompt
-  generation time problem, not a broken connection.
-- **Next step**: Loop-phase Task 2 is **blocked** — do not extend this fallback pattern to PRD
-  Generator, Story Breakdown, or Gap Analyzer (or wire mistral:7b-instruct) until the qwen3.5:4b
-  timeout is actually fixed (raise whatever default HTTP/request timeout is being hit — candidate:
-  n8n's own default request timeout — and/or investigate why a 4B model needs >331s to process a
-  ~2,500-word system prompt on this host, and/or reduce host load — 28+ containers were running
-  throughout this task). Extending to 3 more agents on top of an unproven fallback tier would just
-  multiply an unresolved problem.
+- **Last completed step**: Loop-phase Task 2 — found and fixed the root cause of Task 1's ~331s
+  qwen3.5:4b timeout, but re-testing surfaced a SECOND, distinct blocker. Root cause of the timeout:
+  `axios.defaults.timeout = 300000` (300s) hardcoded in `@n8n/backend-network`'s
+  `configureGlobalAxiosDefaults()` — n8n's global HTTP client default, set once at process startup,
+  **no environment variable override exists** for it in this n8n version. The Ollama node's own
+  `apiRequest` sets no per-request timeout, so every call fell through to this global default (the
+  observed ~331s = the 300s timeout plus connection/retry overhead). Fixed by patching
+  `.../@n8n/backend-network/.../http/axios/config.js` from `300000` to `900000` (15 min) directly in
+  the container filesystem (as root, via `docker exec`), applied to **both** the live `n8n-n8n-1`
+  container (then `docker restart n8n-n8n-1` — Node.js caches loaded modules, so the file edit alone
+  does nothing without a process restart; confirmed back up healthy afterward) **and** a separate
+  persistent sibling container used for CLI testing (ephemeral `docker run --rm` sibling containers
+  pull fresh from the unpatched base image every time, so they needed their own patch). **This patch
+  is a live filesystem edit, NOT part of the Docker image build and NOT tracked in this git repo —
+  it will NOT survive a container recreation (`docker compose down && up`, an image pull/upgrade,
+  `docker rm`+recreate). Re-apply it (see the patch command in Loop-phase Task 2's own Summary) if
+  `n8n-n8n-1` is ever recreated and qwen3.5:4b fallback work resumes.**
+  **Re-test result: the timeout itself is fixed** — the same isolated qwen3.5:4b + T1-prompt call
+  that failed 3/3 at ~331s in Task 1 now completed with `status: success`, no connection error, after
+  926.585s (~15m26s) real generation time, 2902 output tokens. **But the response's final `content`
+  field was completely EMPTY** — a new, different failure mode, not a timeout. Working hypothesis
+  (not fixed or further investigated this task, per its explicit scope boundary): the Ollama node's
+  `think` option defaults to `true` (separates a model's internal reasoning from its final output for
+  "thinking"-capable models), and combined with a large, complex system prompt, qwen3.5:4b likely
+  spent its entire ~2902-token generation budget on hidden reasoning and never reached the point of
+  emitting the actual structured T1 answer. T1 could not be scored positively — an empty response
+  trivially fails every PASS criterion.
+- **Next step**: Loop-phase Task 3 (or whatever the user names it) needs to resolve the empty-
+  content/`think`-mode issue before qwen3.5:4b can be considered a working fallback tier — candidates
+  to investigate: setting the Ollama node's `think` option to `false`, and/or raising `num_predict`
+  well above the 1024 default so there's room for both reasoning and a final answer if `think` stays
+  on. **Do not extend the fallback pattern to PRD Generator, Story Breakdown, Gap Analyzer, or wire
+  mistral:7b-instruct until qwen3.5:4b actually produces a real, scoreable T1 response** — two
+  consecutive tasks now have found a real blocker on Requirement Extractor alone; multiplying an
+  unproven tier across 3 more agents would just multiply unresolved problems. Separately, even once
+  content is non-empty, ~15+ minutes for a single fallback call is a serious latency/UX concern worth
+  the user's explicit attention regardless of pass/fail — a "fallback that keeps the pipeline usable"
+  taking a quarter of an hour may not meet the spirit of why the fallback chain exists.
 - **Known deviations from spec, intentionally kept**:
   - `.gitignore` includes `!*.example` / `!.env.example` exemptions not in the original literal
     spec text, added because `.env.*` would otherwise silently exclude `.env.example` from every
