@@ -60,44 +60,45 @@ points at it.
 
 - **Current phase**: Baseline phase complete (3 evaluation cycles, 13/14 pass rate) → in The Loop
   phase, building fallback infrastructure one agent at a time.
-- **Last completed step**: Loop-phase Task 2 — found and fixed the root cause of Task 1's ~331s
-  qwen3.5:4b timeout, but re-testing surfaced a SECOND, distinct blocker. Root cause of the timeout:
-  `axios.defaults.timeout = 300000` (300s) hardcoded in `@n8n/backend-network`'s
-  `configureGlobalAxiosDefaults()` — n8n's global HTTP client default, set once at process startup,
-  **no environment variable override exists** for it in this n8n version. The Ollama node's own
-  `apiRequest` sets no per-request timeout, so every call fell through to this global default (the
-  observed ~331s = the 300s timeout plus connection/retry overhead). Fixed by patching
-  `.../@n8n/backend-network/.../http/axios/config.js` from `300000` to `900000` (15 min) directly in
-  the container filesystem (as root, via `docker exec`), applied to **both** the live `n8n-n8n-1`
-  container (then `docker restart n8n-n8n-1` — Node.js caches loaded modules, so the file edit alone
-  does nothing without a process restart; confirmed back up healthy afterward) **and** a separate
-  persistent sibling container used for CLI testing (ephemeral `docker run --rm` sibling containers
-  pull fresh from the unpatched base image every time, so they needed their own patch). **This patch
-  is a live filesystem edit, NOT part of the Docker image build and NOT tracked in this git repo —
-  it will NOT survive a container recreation (`docker compose down && up`, an image pull/upgrade,
-  `docker rm`+recreate). Re-apply it (see the patch command in Loop-phase Task 2's own Summary) if
-  `n8n-n8n-1` is ever recreated and qwen3.5:4b fallback work resumes.**
-  **Re-test result: the timeout itself is fixed** — the same isolated qwen3.5:4b + T1-prompt call
-  that failed 3/3 at ~331s in Task 1 now completed with `status: success`, no connection error, after
-  926.585s (~15m26s) real generation time, 2902 output tokens. **But the response's final `content`
-  field was completely EMPTY** — a new, different failure mode, not a timeout. Working hypothesis
-  (not fixed or further investigated this task, per its explicit scope boundary): the Ollama node's
-  `think` option defaults to `true` (separates a model's internal reasoning from its final output for
-  "thinking"-capable models), and combined with a large, complex system prompt, qwen3.5:4b likely
-  spent its entire ~2902-token generation budget on hidden reasoning and never reached the point of
-  emitting the actual structured T1 answer. T1 could not be scored positively — an empty response
-  trivially fails every PASS criterion.
-- **Next step**: Loop-phase Task 3 (or whatever the user names it) needs to resolve the empty-
-  content/`think`-mode issue before qwen3.5:4b can be considered a working fallback tier — candidates
-  to investigate: setting the Ollama node's `think` option to `false`, and/or raising `num_predict`
-  well above the 1024 default so there's room for both reasoning and a final answer if `think` stays
-  on. **Do not extend the fallback pattern to PRD Generator, Story Breakdown, Gap Analyzer, or wire
-  mistral:7b-instruct until qwen3.5:4b actually produces a real, scoreable T1 response** — two
-  consecutive tasks now have found a real blocker on Requirement Extractor alone; multiplying an
-  unproven tier across 3 more agents would just multiply unresolved problems. Separately, even once
-  content is non-empty, ~15+ minutes for a single fallback call is a serious latency/UX concern worth
-  the user's explicit attention regardless of pass/fail — a "fallback that keeps the pipeline usable"
-  taking a quarter of an hour may not meet the spirit of why the fallback chain exists.
+- **Last completed step**: Loop-phase Task 3 — fixed Task 2's empty-content problem. Root cause:
+  the Ollama node's `think` option (unset in the workflow, so defaulting to `true`) makes
+  qwen3.5:4b spend its generation budget on hidden reasoning separated from the final answer;
+  against Requirement Extractor's long system prompt, it never reached the final answer at all
+  (Task 2: 926s, 2902 output tokens, empty `content`). Setting `think: false` on the
+  `Requirement Extractor - qwen3.5:4b Fallback` node in the live "PRD Genie - Full Pipeline"
+  workflow fixed both problems at once: an isolated re-test (same system prompt + T1 input)
+  completed in **80.6s** (vs. 926s) with **real, non-empty content** (141 output tokens). A
+  second sample via the actual forced-OpenAI-failure full-pipeline path (same method as Task 1)
+  confirmed the fix works end-to-end — OpenAI error → qwen3.5:4b fallback (51.1s) → `Tag:
+  qwen3.5:4b` correctly shows `model_tier: "qwen3.5:4b"` → PRD Generator/Story Breakdown/Gap
+  Analyzer all ran successfully downstream on the fallback-tier output. **Live pipeline restored
+  to its correct state afterward**: OpenAI node back on `gpt-4o-mini`, fallback node's `think:
+  false` kept, verified via a final export (8 nodes, no duplicates).
+  **T1 scoring — both samples FAIL, consistently, in the same way.** Isolated test: filter-by-
+  date/category/status present but the paraphrase narrowed to "date range" only; 2-second load
+  time correct; **PM Sarah demoted from a stated fact into an "Owner: UNKNOWN" hedge that
+  mischaracterizes a clearly stated fact as ambiguous**; **Q3 deadline completely absent, not
+  mentioned anywhere.** Pipeline-path sample: broadly similar — PM Sarah and Q3 both technically
+  present as words, but each wrapped in confused, self-contradictory reasoning that argues a
+  clearly-stated fact might be "UNKNOWN" before conceding it's actually stated. Neither sample
+  invents anything false (`hallucination_detected: No` both times) — the failure mode is
+  **under-extraction / miscategorizing stated facts as unknown**, not fabrication. This is a real,
+  repeatable quality gap, not a one-off sampling fluke.
+- **Next step**: qwen3.5:4b is now **fast and non-empty but not yet trustworthy** — extending the
+  fallback pattern to PRD Generator, Story Breakdown, or Gap Analyzer (or wiring mistral:7b as
+  PRD Generator's second fallback) should wait until this extraction-quality gap is addressed,
+  since it would otherwise just propagate silently-degraded requirement extractions downstream
+  into every other agent. Two candidate directions for whoever picks this up: (a) a shorter,
+  fallback-tier-specific system prompt (the current one is written for a strong instruction-
+  following model like `gpt-4o-mini`; qwen3.5:4b may need the guardrail stated more simply/
+  directly rather than at the same length/nuance), or (b) explicit few-shot examples in the
+  fallback prompt showing that a directly-labeled fact ("PM: Sarah.") is never "UNKNOWN." Neither
+  was attempted this task (out of scope — this task was specifically about the `think`/timeout
+  mechanics, not prompt-quality tuning).
+  **Timeout patch caveat still applies and is unchanged**: `axios.defaults.timeout` is still
+  patched to `900000` in `n8n-n8n-1`'s live filesystem only (not the Docker image, not any
+  git-tracked file) — will not survive a container recreation. Re-apply per Task 2's Summary if
+  that ever happens.
 - **Known deviations from spec, intentionally kept**:
   - `.gitignore` includes `!*.example` / `!.env.example` exemptions not in the original literal
     spec text, added because `.env.*` would otherwise silently exclude `.env.example` from every
